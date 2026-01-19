@@ -116,6 +116,12 @@ Three integrated platform products delivering unified developer experience:
 | Splunk | Log Management & Analytics | ⬜ Pending |
 | ServiceNow | IT Service Management | ⬜ Pending |
 | KatanaDB | Database Management | ⬜ Pending |
+| Coder | Cloud Development Environment | ⬜ Pending |
+| Jira | Project & Issue Tracking | ⬜ Pending |
+| Wiz | Cloud Security Platform | ⬜ Pending |
+| Microsoft EntraID | Identity & Access Management | ⬜ Pending |
+| Heimdall (S3C) | Security Compliance Framework | ⬜ Pending |
+| Apigee (API Hub) | API Management & Catalog | ⬜ Pending |
 
 ---
 
@@ -128,6 +134,22 @@ Three integrated platform products delivering unified developer experience:
 | One-Touch Assembly → Launch Control & Verify | Platform engineering workflow | ⬜ Pending |
 | Greenfield Test | New project deployment scenario | ⬜ Pending |
 | Brownfield Test | Existing application migration | ⬜ Pending |
+
+#### Data Ingestion — CI/CD/CV Tools
+> Upon contract execution, submit connections to production SaaS
+
+| Tool | Purpose | Status |
+|------|---------|--------|
+| Insight (EDW) | Enterprise Data Warehouse | ⬜ Pending |
+| Kafka | Event Streaming Platform | ⬜ Pending |
+| Prometheus | Metrics & Monitoring | ⬜ Pending |
+| Terraform Enterprise | Infrastructure as Code | ⬜ Pending |
+| Loderunner | Performance Testing | ⬜ Pending |
+| Apiiro | Application Security Posture | ⬜ Pending |
+| FARM (SDLC Docs) | SDLC Documentation System | ⬜ Pending |
+| XChange | Integration Platform | ⬜ Pending |
+| Secure Code Warrior | Security Training Platform | ⬜ Pending |
+| GetDX | Developer Experience Surveys | ⬜ Pending |
 
 #### Deliverables
 | Deliverable | Description | Status |
@@ -646,12 +668,22 @@ Comprehensive modal for establishing the "Digital Thread" from commit to product
 **Data Sources to Correlate:**
 | Category | Tools |
 |----------|-------|
-| Identity & Org | Active Directory, Workday, ServiceNow CMDB |
+| Identity & Org | Active Directory, Workday, ServiceNow CMDB, Microsoft EntraID |
+| Development Environment | Coder |
 | Source Control | GitHub, GitLab |
+| Project Management | Jira |
 | CI/CD Pipeline | Harness, GitLab CI, GitHub Actions |
+| Infrastructure as Code | Terraform Enterprise |
 | Artifact Registry | Nexus |
-| Runtime & Observability | K8s, Dynatrace, Splunk, Grafana |
-| Security & Compliance | Fortify, Sonatype, SonarQube, Apiiro, OPA |
+| API Management | Apigee (API Hub) |
+| Event Streaming | Kafka |
+| Data & Analytics | Insight (EDW) |
+| Runtime & Observability | K8s, Dynatrace, Splunk, Grafana, Prometheus |
+| Performance Testing | Loderunner |
+| Security & Compliance | Fortify, Sonatype, SonarQube, Apiiro, OPA, Wiz, Heimdall (S3C), Secure Code Warrior |
+| SDLC Documentation | FARM |
+| Integration Platform | XChange |
+| Developer Experience | GetDX |
 
 #### Communications Page Updates (`communications.html`)
 
@@ -835,6 +867,87 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 - **Resilient** — Fully automated pipelines, self-healing, no manual nudging
 
 **Tagline:** *Frictionless by Design. Compliant by Default. Resilient at Core.*
+
+---
+
+### Session: January 19, 2026 — Data Ingestion Expansion
+
+#### New Integrations Added (6 Tools)
+
+| Tool | Category | Purpose |
+|------|----------|---------|
+| Coder | Development Environment | Cloud Development Environment — workspace provisioning, IDE templates |
+| Jira | Project Management | Project & Issue Tracking — work item linking, initiative tracking |
+| Wiz | Security & Compliance | Cloud Security Platform — cloud posture, vulnerability management |
+| Microsoft EntraID | Identity & Access | Identity & Access Management — SSO, user provisioning, group sync |
+| Heimdall (S3C) | Security & Compliance | Security Compliance Framework — compliance scanning, audit reporting |
+| Apigee (API Hub) | API Management | API Management & Catalog — API inventory, traffic metrics, policy data |
+
+#### Scope Impact Assessment
+
+**Integration Complexity:**
+| Tool | Complexity | Native Cortex Support | Notes |
+|------|------------|----------------------|-------|
+| Coder | Low | Yes (Catalog integration) | Already part of platform stack, catalog sync |
+| Jira | Medium | Yes (Native plugin) | Work item correlation, initiative tracking |
+| Wiz | Medium | Yes (Security plugin) | Cloud security findings, vulnerability data |
+| Microsoft EntraID | High | Custom (SCIM/Graph API) | User/group sync, team ownership mapping |
+| Heimdall (S3C) | Medium | Custom (API) | Compliance scan results, audit trail |
+| Apigee (API Hub) | Medium | Yes (Native plugin) | API catalog sync, traffic metrics, gateway policies |
+
+**Prerequisites Impact:**
+- **Network Connectivity:** Additional firewall rules for EntraID (Azure AD endpoints), Wiz API, Heimdall API
+- **Authentication:** Service principals required for EntraID, API tokens for Wiz and Heimdall
+- **Data Volume:** EntraID sync may require incremental sync strategy for large orgs
+
+**PoV Workshop Impact:**
+- Jira integration enables initiative tracking (Marshall Plan, AppSec SCM Policy)
+- EntraID enables team ownership auto-population from org directory
+- Wiz enables cloud security posture in scorecards
+- Heimdall enables compliance tracking in scorecards
+
+**Updated Total Integrations (Phase 0):**
+| Previous | Added | New Total |
+|----------|-------|-----------|
+| 11 tools | 6 tools | 17 tools |
+
+#### Phase 1 Data Ingestion — CI/CD/CV Tools (10 Tools)
+
+> Upon contract execution, submit connections to production SaaS
+
+| Tool | Category | Purpose |
+|------|----------|---------|
+| Insight (EDW) | Data & Analytics | Enterprise Data Warehouse — historical metrics, reporting data |
+| Kafka | Event Streaming | Event Streaming Platform — real-time data pipelines |
+| Prometheus | Observability | Metrics & Monitoring — time-series metrics collection |
+| Terraform Enterprise | Infrastructure | Infrastructure as Code — provisioning audit trail |
+| Loderunner | Performance | Performance Testing — load test results, benchmarks |
+| Apiiro | Security | Application Security Posture — risk analysis, code changes |
+| FARM (SDLC Docs) | Documentation | SDLC Documentation System — compliance artifacts |
+| XChange | Integration | Integration Platform — data exchange workflows |
+| Secure Code Warrior | Training | Security Training Platform — developer security skills |
+| GetDX | Developer Experience | Developer Experience Surveys — DX metrics, sentiment |
+
+**Phase 1 Integration Complexity:**
+| Tool | Complexity | Native Cortex Support | Notes |
+|------|------------|----------------------|-------|
+| Insight (EDW) | High | Custom (JDBC/API) | Enterprise data warehouse, BI reporting |
+| Kafka | Medium | Yes (Event streaming) | Real-time event ingestion |
+| Prometheus | Low | Yes (Native plugin) | Metrics scraping, alerting data |
+| Terraform Enterprise | Medium | Yes (Native plugin) | State files, run history |
+| Loderunner | Medium | Custom (API) | Performance test results |
+| Apiiro | Medium | Yes (Security plugin) | Risk scores, code analysis |
+| FARM (SDLC Docs) | Medium | Custom (API) | Documentation compliance |
+| XChange | Medium | Custom (API) | Integration workflows |
+| Secure Code Warrior | Low | Custom (API) | Training completion metrics |
+| GetDX | Low | Custom (API) | Survey results, DX scores |
+
+**Total Program Integrations:**
+| Phase | Tools | Purpose |
+|-------|-------|---------|
+| Phase 0 | 17 | Foundation integrations (contract execution) |
+| Phase 1 | 10 | PoV Workshop integrations (post-contract) |
+| **Total** | **27** | **Full platform connectivity** |
 
 ---
 
