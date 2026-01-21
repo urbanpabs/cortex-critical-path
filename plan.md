@@ -945,6 +945,53 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 | Phase 1 | 9 | PoV Workshop integrations (post-contract) |
 | **Total** | **26** | **Full platform connectivity** |
 
+#### Integration Removal: FARM (SDLC Docs)
+
+**Reason:** No longer required for platform connectivity
+
+**Files Updated:**
+- `index.html` — Removed from Phase 1 Data Ingestion tool grid
+- `plan.md` — Removed from Phase 1 table, Data Sources to Correlate, session notes
+
+**Updated Counts:**
+| Metric | Previous | Updated |
+|--------|----------|---------|
+| Phase 1 Tools | 10 | 9 |
+| Total Integrations | 27 | 26 |
+
+#### Footer Branding Update
+
+**Change:** Removed "© Paula Braden •" prefix from all page footers
+
+**Pages Updated (11 total):**
+| Page | New Footer |
+|------|------------|
+| index.html | PLATFORM AS A PRODUCT • CRITICAL PATH |
+| capabilities.html | PLATFORM AS A PRODUCT • PLATFORM CAPABILITIES |
+| communications.html | PLATFORM AS A PRODUCT • COMMUNICATIONS PLAN |
+| executive-summary.html | PLATFORM AS A PRODUCT • EXECUTIVE SUMMARY |
+| plateng-flow.html | PLATFORM ENGINEERING AS CODE • DIGITAL THREAD |
+| policy-as-code.html | PLATFORM AS A PRODUCT • POLICY-AS-CODE |
+| reference.html | PLATFORM AS A PRODUCT • PLATFORM REFERENCE |
+| release-notes.html | PLATFORM AS A PRODUCT • RELEASE NOTES |
+| risks.html | PLATFORM AS A PRODUCT • RISK REGISTER |
+| roadmap.html | PLATFORM AS A PRODUCT • CAPABILITY ROADMAP |
+| stakeholders.html | PLATFORM AS A PRODUCT • PROGRAM STAKEHOLDERS |
+
+#### Stakeholders Page Update (`stakeholders.html`)
+
+**C-Suite Sponsors Expansion:**
+| Previous | Updated |
+|----------|---------|
+| 1 sponsor | 3 sponsors |
+
+**C-Suite Sponsors (3):**
+| Name | Title |
+|------|-------|
+| Michael Torres | SVP, Enterprise Technology |
+| Jennifer Walsh | SVP, Digital Transformation |
+| Robert Kimura | VP, Engineering Excellence |
+
 ---
 
 *Document generated: Session aggregation for Cortex.io IDP Implementation Program*
