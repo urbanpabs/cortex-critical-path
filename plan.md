@@ -146,7 +146,6 @@ Three integrated platform products delivering unified developer experience:
 | Terraform Enterprise | Infrastructure as Code | ⬜ Pending |
 | Loderunner | Performance Testing | ⬜ Pending |
 | Apiiro | Application Security Posture | ⬜ Pending |
-| FARM (SDLC Docs) | SDLC Documentation System | ⬜ Pending |
 | XChange | Integration Platform | ⬜ Pending |
 | Secure Code Warrior | Security Training Platform | ⬜ Pending |
 | GetDX | Developer Experience Surveys | ⬜ Pending |
@@ -681,7 +680,6 @@ Comprehensive modal for establishing the "Digital Thread" from commit to product
 | Runtime & Observability | K8s, Dynatrace, Splunk, Grafana, Prometheus |
 | Performance Testing | Loderunner |
 | Security & Compliance | Fortify, Sonatype, SonarQube, Apiiro, OPA, Wiz, Heimdall (S3C), Secure Code Warrior |
-| SDLC Documentation | FARM |
 | Integration Platform | XChange |
 | Developer Experience | GetDX |
 
@@ -870,7 +868,7 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 
 ---
 
-### Session: January 19, 2026 — Data Ingestion Expansion
+### Session: January 21, 2026 — Data Ingestion Expansion
 
 #### New Integrations Added (6 Tools)
 
@@ -911,7 +909,7 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 |----------|-------|-----------|
 | 11 tools | 6 tools | 17 tools |
 
-#### Phase 1 Data Ingestion — CI/CD/CV Tools (10 Tools)
+#### Phase 1 Data Ingestion — CI/CD/CV Tools (9 Tools)
 
 > Upon contract execution, submit connections to production SaaS
 
@@ -923,7 +921,6 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 | Terraform Enterprise | Infrastructure | Infrastructure as Code — provisioning audit trail |
 | Loderunner | Performance | Performance Testing — load test results, benchmarks |
 | Apiiro | Security | Application Security Posture — risk analysis, code changes |
-| FARM (SDLC Docs) | Documentation | SDLC Documentation System — compliance artifacts |
 | XChange | Integration | Integration Platform — data exchange workflows |
 | Secure Code Warrior | Training | Security Training Platform — developer security skills |
 | GetDX | Developer Experience | Developer Experience Surveys — DX metrics, sentiment |
@@ -937,7 +934,6 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 | Terraform Enterprise | Medium | Yes (Native plugin) | State files, run history |
 | Loderunner | Medium | Custom (API) | Performance test results |
 | Apiiro | Medium | Yes (Security plugin) | Risk scores, code analysis |
-| FARM (SDLC Docs) | Medium | Custom (API) | Documentation compliance |
 | XChange | Medium | Custom (API) | Integration workflows |
 | Secure Code Warrior | Low | Custom (API) | Training completion metrics |
 | GetDX | Low | Custom (API) | Survey results, DX scores |
@@ -946,8 +942,8 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 | Phase | Tools | Purpose |
 |-------|-------|---------|
 | Phase 0 | 17 | Foundation integrations (contract execution) |
-| Phase 1 | 10 | PoV Workshop integrations (post-contract) |
-| **Total** | **27** | **Full platform connectivity** |
+| Phase 1 | 9 | PoV Workshop integrations (post-contract) |
+| **Total** | **26** | **Full platform connectivity** |
 
 ---
 
