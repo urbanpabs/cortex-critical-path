@@ -1225,6 +1225,11 @@
                             <span class="tool-name">Apigee (API Hub)</span>
                             <span class="status-check pending"></span>
                         </div>
+                        <div class="tool-item">
+                            <span class="tool-icon">⚙️</span>
+                            <span class="tool-name">Rundeck</span>
+                            <span class="status-check pending"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -1437,6 +1442,12 @@
                             <span class="task-icon">🏅</span>
                             <span class="task-label">Configure Bronze / Silver / Gold Maturity Levels</span>
                             <span class="task-tag tag-deliverable">Scorecards</span>
+                            <span class="status-check pending"></span>
+                        </div>
+                        <div class="task-item clickable" onclick="openModal('factorykpis')">
+                            <span class="task-icon">🏭</span>
+                            <span class="task-label">Configure Platform Performance Metrics</span>
+                            <span class="task-tag tag-deliverable">Factory KPIs</span>
                             <span class="status-check pending"></span>
                         </div>
                     </div>
@@ -1844,73 +1855,80 @@
                 <div class="modal-section">
                     <div class="modal-section-title">Platform Products</div>
                     <ul class="modal-criteria">
-                        <li>Cortex.io — Axion Relay outbound connectivity</li>
-                        <li>Coder — Cloud Dev Environment network access</li>
-                        <li>Kratix — Platform API & cluster communication</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Cortex.io — Axion Relay outbound connectivity</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Coder — Cloud Dev Environment network access</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Kratix — Platform API & cluster communication</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">Source Control</div>
                     <ul class="modal-criteria">
-                        <li>GitHub — API access for repository data ingestion</li>
-                        <li>GitLab — API access for repository data ingestion</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> GitHub — API access for repository data ingestion</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> GitLab — API access for repository data ingestion</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">CI/CD Pipeline</div>
                     <ul class="modal-criteria">
-                        <li>Harness — Pipeline execution & deployment data</li>
-                        <li>Nexus — Artifact repository connectivity</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> Harness — Pipeline execution & deployment data</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> Nexus — Artifact repository connectivity</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">Security & Code Quality</div>
                     <ul class="modal-criteria">
-                        <li>Fortify — SAST scan results ingestion</li>
-                        <li>Sonatype — SCA dependency analysis data</li>
-                        <li>SonarQube — Code quality metrics</li>
-                        <li>Wiz — Cloud security posture & vulnerability data</li>
-                        <li>Heimdall (S3C) — Security compliance framework API</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> Fortify — SAST scan results ingestion</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> Sonatype — SCA dependency analysis data</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> SonarQube — Code quality metrics</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Wiz — Cloud security posture & vulnerability data</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Heimdall (S3C) — Security compliance framework API</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">Identity & Access</div>
                     <ul class="modal-criteria">
-                        <li>Microsoft EntraID — Azure AD Graph API / SCIM for user & group sync</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Microsoft EntraID — Azure AD Graph API / SCIM for user & group sync</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">Project Management</div>
                     <ul class="modal-criteria">
-                        <li>Jira — Issue tracking & work item correlation API</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Jira — Issue tracking & work item correlation API</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">API Management</div>
                     <ul class="modal-criteria">
-                        <li>Apigee (API Hub) — API catalog, traffic metrics & policy data</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> Apigee (API Hub) — API catalog, traffic metrics & policy data</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">Observability & Operations</div>
                     <ul class="modal-criteria">
-                        <li>Dynatrace — APM metrics & traces</li>
-                        <li>Splunk — Log analytics data</li>
-                        <li>ServiceNow — ITSM integration</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Dynatrace — APM metrics & traces</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Splunk — Log analytics data</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> ServiceNow — ITSM integration</li>
                     </ul>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">Database</div>
                     <ul class="modal-criteria">
-                        <li>KatanaDB — Database management connectivity</li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check done" style="width:14px;height:14px;"></span> KatanaDB — Database management connectivity</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Automation</div>
+                    <ul class="modal-criteria">
+                        <li style="display: flex; align-items: center; gap: 0.5rem;"><span class="status-check pending" style="width:14px;height:14px;"></span> Rundeck — Runbook automation & job scheduling API</li>
                     </ul>
                 </div>
 
@@ -2123,6 +2141,127 @@
                         <a href="https://practices.minimumcd.org/?adopted=YXBpLW1hbmFnZW1lbnQsYXBwbGljYXRpb24tcGlwZWxpbmUsYXJ0aWZhY3QtcmVwb3NpdG9yeSxhdGRkLGF1dG9tYXRlZC1hcnRpZmFjdC12ZXJzaW9uaW5nLGF1dG9tYXRlZC1kYi1jaGFuZ2VzLGF1dG9tYXRlZC1lbnZpcm9ubWVudC1wcm92aXNpb25pbmcsYXV0b21hdGVkLXRlc3RpbmcsYmVoYXZpb3ItZHJpdmVuLWRldmVsb3BtZW50LGJ1aWxkLWF1dG9tYXRpb24sYnVpbGQtb24tY29tbWl0LGNvbXBsaWFuY2UtdGVzdGluZyxjb21wb25lbnQtb3duZXJzaGlwLGNvbmZpZ3VyYXRpb24tbWFuYWdlbWVudCxjb250aW51b3VzLWludGVncmF0aW9uLGNvbnRpbnVvdXMtdGVzdGluZyxjb250cmFjdC10ZXN0aW5nLGNyb3NzLWZ1bmN0aW9uYWwtcHJvZHVjdC10ZWFtLGN5Y2xlLXRpbWUtdHJhY2tpbmcsZGF0YWJhc2UtbWlncmF0aW9uLXN0cmF0ZWd5LGRlcGVuZGVuY3ktbWFuYWdlbWVudCxkZXBsb3ltZW50LWF1dG9tYXRpb24sZGV0ZXJtaW5pc3RpYy10ZXN0cyxkZXZlbG9wZXItZHJpdmVuLXN1cHBvcnQsZXBoZW1lcmFsLXRlc3QtZW52aXJvbm1lbnRzLGV2b2x1dGlvbmFyeS1jb2RpbmcsZXZvbHV0aW9uYXJ5LWRhdGFiYXNlLGV4cGxvcmF0b3J5LXRlc3RpbmcsZmVhdHVyZS1mbGFncyxmdW5jdGlvbmFsLXRlc3RpbmcsaW1tdXRhYmxlLWFydGlmYWN0LGluZnJhc3RydWN0dXJlLWF1dG9tYXRpb24saW50ZWdyYXRpb24tdGVzdGluZyxsb2dnaW5nLWluZnJhc3RydWN0dXJlLG1vZHVsYXItc3lzdGVtLG1vbml0b3JpbmctYW5kLWFsZXJ0aW5nLG9uLWRlbWFuZC1yb2xsYmFjayxwZXJmb3JtYW5jZS10ZXN0aW5nLHBpcGVsaW5lLXZpc2liaWxpdHkscHJpb3JpdGl6ZWQtZmVhdHVyZXMscHJvZHVjdC1nb2FscyxxdWFsaXR5LWdhdGVzLHJlc2lsaWVuY2UtdGVzdGluZyxzZWNyZXQtbWFuYWdlbWVudCxzZWN1cml0eS10ZXN0aW5nLHNtb2tlLXRlc3Rpbmcsc3RhdGljLWFuYWx5c2lzLHN0b3AtdGhlLWxpbmUsdGVsZW1ldHJ5LW9ic2VydmFiaWxpdHksdGVzdC1kYXRhLW1hbmFnZW1lbnQsdGVzdC1lbnZpcm9ubWVudCx0cnVuay1iYXNlZC1kZXZlbG9wbWVudCx1bmlmaWVkLXRlYW0tYmFja2xvZyx1c2FiaWxpdHktdGVzdGluZyx2ZXJzaW9uLWNvbnRyb2wsdmVyc2lvbmVkLWRhdGFiYXNl" target="_blank" style="color: var(--fiserv-blue); text-decoration: none;">
                             🔗 View Fiserv Adopted Practices on Minimum CD →
                         </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Performance Metrics (Factory KPIs) Modal -->
+    <div class="modal-overlay" id="factorykpis-modal" onclick="closeModal(event, 'factorykpis')">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 900px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>🏭</span>
+                    Platform Performance Metrics — Software Factory KPIs
+                </div>
+                <button class="modal-close" onclick="closeModal(event, 'factorykpis')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <span class="scenario-tag greenfield">Manufacturing → Software Translation</span>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Overview</div>
+                    <p class="modal-text">
+                        The platform operates as a <strong>Software Factory</strong> responsible for manufacturing, logistics, and distribution of software products. Traditional manufacturing KPIs are translated into software-native metrics to measure platform health, throughput, and operational excellence.
+                    </p>
+                    <p class="modal-text" style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                        Reference: <a href="https://www.machinemetrics.com/blog/manufacturing-kpis" target="_blank" style="color: var(--fiserv-blue);">MachineMetrics Manufacturing KPIs Guide</a>
+                    </p>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">⚡ Throughput & Velocity</div>
+                    <ul class="modal-criteria">
+                        <li><strong>Deployment Throughput</strong> (← Throughput) — Deployments per day/week across all services</li>
+                        <li><strong>Feature Velocity</strong> (← Inventory Turns) — Rate of features delivered vs. backlog size</li>
+                        <li><strong>Release Cadence</strong> (← Takt Time) — Required release frequency to meet business demand</li>
+                        <li><strong>Work in Progress (WIP)</strong> — PRs, features, and changes currently in flight</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">⏱️ Cycle Time & Lead Time</div>
+                    <ul class="modal-criteria">
+                        <li><strong>Deployment Cycle Time</strong> (← Cycle Time) — Commit to production deployment duration</li>
+                        <li><strong>Feature Lead Time</strong> (← Manufacturing Lead Time) — Idea inception to production availability</li>
+                        <li><strong>Environment Provisioning Time</strong> (← Changeover Time) — Time to spin up new dev/test environment</li>
+                        <li><strong>Pipeline Queue Time</strong> (← Machine Set Up Time) — Wait time before pipeline execution begins</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">✅ Quality & Yield</div>
+                    <ul class="modal-criteria">
+                        <li><strong>First Build Success Rate</strong> (← First Pass Yield) — Builds requiring no retry or rework</li>
+                        <li><strong>Deployment Success Rate</strong> (← Production Attainment) — Successful deployments vs. total attempts</li>
+                        <li><strong>Failed Deployment Rate</strong> (← Scrap Rate) — Percentage of deployments that fail or rollback</li>
+                        <li><strong>Rolling Pipeline Yield</strong> (← Rolling Throughput Yield) — Probability of defect-free passage through all pipeline stages</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">🔧 Reliability & Availability</div>
+                    <ul class="modal-criteria">
+                        <li><strong>Mean Time Between Failures (MTBF)</strong> — Average time between production incidents</li>
+                        <li><strong>Mean Time To Recovery (MTTR)</strong> (← Mean Time To Repair) — Average time to restore service after incident</li>
+                        <li><strong>Pipeline Availability</strong> (← Availability) — CI/CD uptime vs. planned operational time</li>
+                        <li><strong>Pipeline Downtime Rate</strong> (← Machine Downtime Rate) — Time CI/CD infrastructure is unavailable</li>
+                        <li><strong>Unscheduled Pipeline Downtime</strong> (← Unscheduled Downtime) — Unplanned CI/CD outages</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">📊 Efficiency & Utilization</div>
+                    <ul class="modal-criteria">
+                        <li><strong>Overall Pipeline Effectiveness (OPE)</strong> (← OEE) — % of planned time producing successful deployments</li>
+                        <li><strong>Platform Capacity Utilization</strong> (← Capacity Utilization) — Active usage vs. available platform capacity</li>
+                        <li><strong>Pipeline Efficiency</strong> (← Manufacturing Cycle Efficiency) — Value-added time vs. total pipeline time</li>
+                        <li><strong>Resource Utilization</strong> (← Asset Utilization) — Compute/runner usage efficiency</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">📦 Delivery & Distribution</div>
+                    <ul class="modal-criteria">
+                        <li><strong>On-Time Release Rate</strong> (← On-Time Delivery) — Releases delivered on committed schedule</li>
+                        <li><strong>Artifact Registry Accuracy</strong> (← Inventory Accuracy) — Artifact metadata accuracy in Nexus</li>
+                        <li><strong>Change Failure Rate</strong> (← Customer Return Rate) — Deployments causing incidents requiring remediation</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">💰 Cost & Investment</div>
+                    <ul class="modal-criteria">
+                        <li><strong>Cost Per Deployment</strong> (← Manufacturing Cost Per Unit) — Infrastructure + labor cost per deployment</li>
+                        <li><strong>Pipeline Cost Per Build</strong> (← Energy Cost Per Unit) — Compute cost per CI/CD execution</li>
+                        <li><strong>Revenue Per Engineer</strong> (← Revenue Per Employee) — Business value generated per engineer</li>
+                        <li><strong>Platform ROI</strong> (← Return On Assets) — Value delivered vs. platform investment</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">👥 Workforce & Productivity</div>
+                    <ul class="modal-criteria">
+                        <li><strong>Developer Time to Productivity</strong> (← Time To Productivity) — Onboarding duration for new engineers</li>
+                        <li><strong>Self-Service Success Rate</strong> (← Schedule Attainment) — Requests completed without escalation</li>
+                        <li><strong>Cognitive Load Index</strong> (← Labor As % of Cost) — Context switching and tool friction measures</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">🛡️ Compliance & Governance</div>
+                    <ul class="modal-criteria">
+                        <li><strong>Policy Compliance Rate</strong> (← Non-Compliance Events) — Services meeting policy-as-code requirements</li>
+                        <li><strong>Security Scan Pass Rate</strong> — Builds passing SAST/SCA/DAST gates</li>
+                        <li><strong>Audit Trail Completeness</strong> — Full traceability from commit to production</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">DORA Metrics Alignment</div>
+                    <p class="modal-text">
+                        Factory KPIs complement and extend <strong>DORA metrics</strong> (Deployment Frequency, Lead Time for Changes, Change Failure Rate, MTTR) by adding manufacturing-inspired operational visibility into the software delivery supply chain.
                     </p>
                 </div>
             </div>

@@ -122,6 +122,7 @@ Three integrated platform products delivering unified developer experience:
 | Microsoft EntraID | Identity & Access Management | ⬜ Pending |
 | Heimdall (S3C) | Security Compliance Framework | ⬜ Pending |
 | Apigee (API Hub) | API Management & Catalog | ⬜ Pending |
+| Rundeck | Runbook Automation & Job Scheduling | ⬜ Pending |
 
 ---
 
@@ -880,6 +881,7 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 | Microsoft EntraID | Identity & Access | Identity & Access Management — SSO, user provisioning, group sync |
 | Heimdall (S3C) | Security & Compliance | Security Compliance Framework — compliance scanning, audit reporting |
 | Apigee (API Hub) | API Management | API Management & Catalog — API inventory, traffic metrics, policy data |
+| Rundeck | Automation | Runbook Automation & Job Scheduling — operational runbooks, scheduled jobs |
 
 #### Scope Impact Assessment
 
@@ -991,6 +993,78 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 | Michael Torres | SVP, Enterprise Technology |
 | Jennifer Walsh | SVP, Digital Transformation |
 | Robert Kimura | VP, Engineering Excellence |
+
+---
+
+### Session: January 22, 2026 — Network Connectivity & Factory KPIs
+
+#### Network & Connectivity Modal Updates
+
+**Tufin Tickets Marked Complete (9 tools):**
+| Tool | Category | Status |
+|------|----------|--------|
+| GitHub | Source Control | ✅ Complete |
+| GitLab | Source Control | ✅ Complete |
+| Nexus | CI/CD Pipeline | ✅ Complete |
+| Fortify | Security & Code Quality | ✅ Complete |
+| Sonatype | Security & Code Quality | ✅ Complete |
+| SonarQube | Security & Code Quality | ✅ Complete |
+| Harness | CI/CD Pipeline | ✅ Complete |
+| KatanaDB | Database | ✅ Complete |
+| Apigee (API Hub) | API Management | ✅ Complete |
+
+**Visual Enhancements:**
+- Added status indicators (checkmarks/pending) to all tools in Network modal
+- Organized by category with flex layout for alignment
+
+#### New Integration Added
+
+**Rundeck:**
+| Field | Value |
+|-------|-------|
+| Category | Automation |
+| Purpose | Runbook Automation & Job Scheduling |
+| Status | ⬜ Pending |
+| Location | Phase 0 Data Ingestion tools |
+
+**Updated Tool Count:**
+| Previous | Added | New Total |
+|----------|-------|-----------|
+| 17 tools | 1 tool | 18 tools |
+
+#### New Feature: Platform Performance Metrics (Factory KPIs)
+
+**Location:** Phase 2 Production Pilot → Scorecard Configuration
+
+**Concept:** The platform operates as a **Software Factory** responsible for manufacturing, logistics, and distribution of software products. Traditional manufacturing KPIs are translated into software-native metrics.
+
+**KPI Categories:**
+
+| Category | Metrics |
+|----------|---------|
+| Throughput & Velocity | Deployment Throughput, Feature Velocity, Release Cadence, WIP |
+| Cycle Time & Lead Time | Deployment Cycle Time, Feature Lead Time, Environment Provisioning Time, Pipeline Queue Time |
+| Quality & Yield | First Build Success Rate, Deployment Success Rate, Failed Deployment Rate, Rolling Pipeline Yield |
+| Reliability & Availability | MTBF, MTTR, Pipeline Availability, Pipeline Downtime Rate, Unscheduled Downtime |
+| Efficiency & Utilization | Overall Pipeline Effectiveness (OPE), Platform Capacity Utilization, Pipeline Efficiency, Resource Utilization |
+| Delivery & Distribution | On-Time Release Rate, Artifact Registry Accuracy, Change Failure Rate |
+| Cost & Investment | Cost Per Deployment, Pipeline Cost Per Build, Revenue Per Engineer, Platform ROI |
+| Workforce & Productivity | Developer Time to Productivity, Self-Service Success Rate, Cognitive Load Index |
+| Compliance & Governance | Policy Compliance Rate, Security Scan Pass Rate, Audit Trail Completeness |
+
+**Manufacturing → Software Translation Examples:**
+| Manufacturing KPI | Software Factory KPI |
+|-------------------|---------------------|
+| Overall Equipment Effectiveness (OEE) | Overall Pipeline Effectiveness (OPE) |
+| First Pass Yield | First Build Success Rate |
+| Cycle Time | Deployment Cycle Time |
+| Throughput | Deployment Throughput |
+| Scrap Rate | Failed Deployment Rate |
+| Changeover Time | Environment Provisioning Time |
+| On-Time Delivery | On-Time Release Rate |
+| Mean Time To Repair | Mean Time To Recovery (MTTR) |
+
+**Reference:** https://www.machinemetrics.com/blog/manufacturing-kpis
 
 ---
 
