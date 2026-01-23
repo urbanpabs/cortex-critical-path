@@ -196,6 +196,29 @@
             }
         }
 
+        .why-hook {
+            margin-bottom: 2rem;
+        }
+
+        .why-question {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .why-answer {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 600;
+            line-height: 1.3;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .investment-highlight {
             display: flex;
             justify-content: center;
@@ -539,6 +562,102 @@
                 padding: 1.5rem;
             }
         }
+
+        /* Key Success Factors */
+        .success-factors {
+            margin-bottom: 4rem;
+        }
+
+        .success-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 800px) {
+            .success-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .success-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.75rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .success-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .success-card.cognitive::before { background: linear-gradient(90deg, var(--fiserv-blue), #06b6d4); }
+        .success-card.compliant::before { background: linear-gradient(90deg, #10b981, #22c55e); }
+        .success-card.agentic::before { background: linear-gradient(90deg, #a855f7, #ec4899); }
+        .success-card.zero-onboard::before { background: linear-gradient(90deg, var(--fiserv-orange), #f59e0b); }
+
+        .success-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .success-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .success-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .success-body {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .success-metric {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        .success-metric.highlight-blue { color: var(--fiserv-blue); border-color: rgba(35, 124, 184, 0.3); background: rgba(35, 124, 184, 0.1); }
+        .success-metric.highlight-green { color: #22c55e; border-color: rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.1); }
+        .success-metric.highlight-purple { color: #a855f7; border-color: rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.1); }
+        .success-metric.highlight-orange { color: var(--fiserv-orange); border-color: rgba(255, 102, 0, 0.3); background: rgba(255, 102, 0, 0.1); }
     </style>
 </head>
 <body>
@@ -555,11 +674,16 @@
 
         <header>
             <div class="logo-badge">EXECUTIVE SUMMARY</div>
-            <h1>The <span class="highlight">Flight Deck</span> Platform</h1>
+            <h1>Portal to <span class="highlight">Platform Engineering</span></h1>
         </header>
 
         <!-- Value Proposition Hero -->
         <section class="value-hero">
+            <div class="why-hook">
+                <div class="why-question">Why are we doing this?</div>
+                <div class="why-answer">Our engineers are drowning in tools, not building products.</div>
+            </div>
+
             <div class="investment-highlight">
                 <div class="investment-item">
                     <div class="investment-amount invest">$20M</div>
@@ -572,7 +696,7 @@
             </div>
 
             <p class="value-statement">
-                A <strong>$20 million</strong> investment in labor capital and initial license procurement (1,000 Coder seats, 500 Cortex seats) establishes the manufacturing capability to address <strong>$1 Billion+</strong> in cognitive load from context switching, opportunity cost, and redundant efforts in collecting and visualizing data across our engineering organization.
+                Every day, engineers navigate 30+ disconnected tools and 40 URLs just to ship code. That friction costs us <strong>$1 Billion+</strong> in lost productivity — context switching, chasing information, duplicating effort. A <strong>$20M</strong> investment in the Portal to Platform Engineering turns that chaos into a single, unified experience where compliance is automatic and deployment is one click.
             </p>
 
             <div class="selling-points">
@@ -709,6 +833,84 @@
                 </div>
             </div>
         </div>
+
+        <!-- Key Success Factors -->
+        <section class="success-factors">
+            <div class="section-header">
+                <div class="section-title">Win Factors</div>
+                <h2 class="section-headline">Key Success Factors</h2>
+            </div>
+
+            <div class="success-grid">
+                <!-- Cognitive Load Reduction -->
+                <div class="success-card cognitive">
+                    <div class="success-header">
+                        <div class="success-icon">🧠</div>
+                        <div>
+                            <div class="success-title">Cognitive Load Reduction</div>
+                            <div class="success-subtitle">RECLAIM LOST HOURS</div>
+                        </div>
+                    </div>
+                    <div class="success-body">
+                        Our teams navigate <strong>30+ tools</strong> and <strong>40 URLs</strong> daily to own and operate their platforms. We estimate <strong>$1 Billion</strong> in addressable value from reclaimed engineering time — context switching, labor moving through friction, opportunity cost, and manual collection of replicated and redundant information scattered across the entire enterprise.
+                    </div>
+                    <div class="success-metric highlight-blue">
+                        <span>💰</span> $1B+ addressable value
+                    </div>
+                </div>
+
+                <!-- Frictionless Compliant Supply Chain -->
+                <div class="success-card compliant">
+                    <div class="success-header">
+                        <div class="success-icon">🔗</div>
+                        <div>
+                            <div class="success-title">Frictionless Secure Software Supply Chain</div>
+                            <div class="success-subtitle">VISIBLE COMPLIANCE</div>
+                        </div>
+                    </div>
+                    <div class="success-body">
+                        A fully compliant, secure software supply chain where deployments meet standards through <strong>maturity scoring</strong> and <strong>policy-as-code</strong>. Visibility is tracked continuously — from individual developer to application owner through executive leadership.
+                    </div>
+                    <div class="success-metric highlight-green">
+                        <span>👁️</span> Developer → App Owner → Executive
+                    </div>
+                </div>
+
+                <!-- Agentic AI Push-Button Compliance -->
+                <div class="success-card agentic">
+                    <div class="success-header">
+                        <div class="success-icon">🤖</div>
+                        <div>
+                            <div class="success-title">Push-Button Policy Adherence</div>
+                            <div class="success-subtitle">AGENTIC AI</div>
+                        </div>
+                    </div>
+                    <div class="success-body">
+                        Interlacing the portal with <strong>agentic AI</strong> for push-button adherence to maturity levels and policy-as-code requirements. Automated remediation suggestions, intelligent scaffolding, and continuous compliance validation — reducing manual intervention to near-zero.
+                    </div>
+                    <div class="success-metric highlight-purple">
+                        <span>⚡</span> Automated compliance remediation
+                    </div>
+                </div>
+
+                <!-- Zero-Onboarding MTTR -->
+                <div class="success-card zero-onboard">
+                    <div class="success-header">
+                        <div class="success-icon">🚀</div>
+                        <div>
+                            <div class="success-title">Zero-Onboarding Platform</div>
+                            <div class="success-subtitle">INSTANT PRODUCTIVITY</div>
+                        </div>
+                    </div>
+                    <div class="success-body">
+                        Achieving platform engineering's ultimate goal: <strong>&lt;10 minute MTTR</strong> through zero-onboarding design. Engineers inherit the platform's capabilities immediately — no training sessions, no ramp-up time. The platform teaches itself through intuitive workflows and embedded guidance.
+                    </div>
+                    <div class="success-metric highlight-orange">
+                        <span>⏱️</span> MTTR &lt; 10 minutes
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Vision Banner -->
         <section class="vision-banner">
