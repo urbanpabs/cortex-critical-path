@@ -1068,4 +1068,49 @@ platform-program-management/           ← Parent repo (urbanpabs/platform-progr
 
 ---
 
-*Document generated: Session aggregation for Cortex.io IDP Implementation Program*
+### Session: January 22, 2026 — Branding Consistency & Executive Summary Enhancement
+
+#### Global Naming Update: "Portal to Platform Engineering"
+
+Standardized naming across all pages to use "Portal to Platform Engineering" instead of "Cortex.io IDP" or "Flight Deck Platform":
+
+| Page | Update |
+|------|--------|
+| `executive-summary.html` | "The Flight Deck Platform" → "Portal to Platform Engineering" |
+| `capabilities.html` | "Flight Deck Technology Matrix" → "Portal to Platform Engineering Technology Matrix" |
+| `stakeholders.html` | Title and subtitle updated |
+| `risks.html` | Title and subtitle updated |
+| `policy-as-code.html` | Subtitle updated with new messaging |
+
+**Note:** Kept "Cortex.io" references where they refer to the actual product/vendor (e.g., Cortex.io catalog, Cortex.io vendor support, Cortex.io Scorecard Policy).
+
+#### Executive Summary Enhancements (`executive-summary.html`)
+
+**WHY Hook Added:**
+```
+WHY ARE WE DOING THIS?
+Our engineers are drowning in tools, not building products.
+```
+
+**Punched-Up Value Statement:**
+- Leads with PAIN (30+ tools, 40 URLs)
+- Shows COST ($1B+ lost productivity)
+- Delivers SOLUTION ($20M investment → unified experience)
+
+**Key Success Factors Section (4 Win Factors):**
+
+| Factor | Subtitle | Key Metric |
+|--------|----------|------------|
+| 🧠 Cognitive Load Reduction | Reclaim Lost Hours | $1B+ addressable value |
+| 🔗 Frictionless Secure Software Supply Chain | Visible Compliance | Developer → App Owner → Executive |
+| 🤖 Push-Button Policy Adherence | Agentic AI | Automated compliance remediation |
+| 🚀 Zero-Onboarding Platform | Instant Productivity | MTTR < 10 minutes |
+
+#### Policy-as-Code Page Update (`policy-as-code.html`)
+
+**Updated Subtitle:**
+> This is the definition of what "good" looks like for the Portal to Platform Engineering. These Continuous Delivery maturity practices define how maturity will be measured and how policies will be written to assure compliance.
+
+---
+
+*Document generated: Session aggregation for Portal to Platform Engineering Program*
