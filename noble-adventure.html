@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Noble Adventure | Platform as a Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fiserv-blue: #237cb8;
+            --fiserv-orange: #ff6600;
+            --fiserv-black: #0e0e0e;
+            --fiserv-gray: #666666;
+
+            /* Adventure Colors */
+            --naive-color: #6b7280;
+            --complexity-color: #dc2626;
+            --elegance-color: #10b981;
+            --gold: #fbbf24;
+
+            /* Product Colors */
+            --coder-color: #10b981;
+            --cortex-color: #237cb8;
+            --kratix-color: #8b5cf6;
+
+            --bg-primary: #0e0e0e;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #252525;
+
+            --text-primary: #f4f4f4;
+            --text-secondary: #bbbbbb;
+            --text-muted: #909090;
+
+            --border-subtle: rgba(187, 187, 187, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(220, 38, 38, 0.06) 0%, transparent 50%),
+                linear-gradient(rgba(102, 102, 102, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 102, 102, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .logo-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--elegance-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        h1 span {
+            background: linear-gradient(90deg, var(--naive-color), var(--complexity-color), var(--elegance-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-section::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            font-size: 12rem;
+            font-family: Georgia, serif;
+            color: rgba(16, 185, 129, 0.1);
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-size: 1.5rem;
+            font-style: italic;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .quote-text .highlight {
+            color: var(--elegance-color);
+            font-weight: 600;
+        }
+
+        .quote-author {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-heading {
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* Three Realms */
+        .realms-container {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            position: relative;
+        }
+
+        .realm-card {
+            flex: 1;
+            padding: 2rem;
+            position: relative;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .realm-card.naive {
+            background: linear-gradient(135deg, rgba(107, 114, 128, 0.2), rgba(107, 114, 128, 0.05));
+            border-radius: 20px 0 0 20px;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            border-right: none;
+        }
+
+        .realm-card.complexity {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(220, 38, 38, 0.05));
+            border-top: 1px solid rgba(220, 38, 38, 0.3);
+            border-bottom: 1px solid rgba(220, 38, 38, 0.3);
+            z-index: 1;
+        }
+
+        .realm-card.elegance {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
+            border-radius: 0 20px 20px 0;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-left: none;
+        }
+
+        .realm-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .realm-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .realm-card.naive .realm-title { color: var(--naive-color); }
+        .realm-card.complexity .realm-title { color: var(--complexity-color); }
+        .realm-card.elegance .realm-title { color: var(--elegance-color); }
+
+        .realm-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .realm-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .realm-items {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .realm-items li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .realm-items li::before {
+            content: '•';
+            flex-shrink: 0;
+        }
+
+        .realm-card.naive .realm-items li::before { color: var(--naive-color); }
+        .realm-card.complexity .realm-items li::before { color: var(--complexity-color); }
+        .realm-card.elegance .realm-items li::before { color: var(--elegance-color); }
+
+        /* Journey Arrow */
+        .journey-arrow {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--naive-color), var(--complexity-color), var(--elegance-color));
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .journey-arrow::after {
+            content: '→';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--elegance-color);
+        }
+
+        @media (max-width: 900px) {
+            .realms-container {
+                flex-direction: column;
+            }
+            .realm-card.naive { border-radius: 20px 20px 0 0; border-right: 1px solid rgba(107, 114, 128, 0.3); border-bottom: none; }
+            .realm-card.complexity { border-left: 1px solid rgba(220, 38, 38, 0.3); border-right: 1px solid rgba(220, 38, 38, 0.3); }
+            .realm-card.elegance { border-radius: 0 0 20px 20px; border-left: 1px solid rgba(16, 185, 129, 0.3); border-top: none; }
+            .journey-arrow { display: none; }
+        }
+
+        /* Sherpas Section */
+        .sherpas-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1100px) {
+            .sherpas-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .sherpas-grid { grid-template-columns: 1fr; }
+        }
+
+        .sherpa-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sherpa-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .sherpa-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .sherpa-card.summit::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .sherpa-card.trailblazer::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+        .sherpa-card.builder::before { background: linear-gradient(90deg, #10b981, #059669); }
+        .sherpa-card.basecamp::before { background: linear-gradient(90deg, #237cb8, #1e6091); }
+
+        .sherpa-card:hover.summit { box-shadow: 0 10px 40px rgba(251, 191, 36, 0.2); }
+        .sherpa-card:hover.trailblazer { box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2); }
+        .sherpa-card:hover.builder { box-shadow: 0 10px 40px rgba(16, 185, 129, 0.2); }
+        .sherpa-card:hover.basecamp { box-shadow: 0 10px 40px rgba(35, 124, 184, 0.2); }
+
+        .sherpa-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .sherpa-role {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .sherpa-card.summit .sherpa-role { color: #fbbf24; }
+        .sherpa-card.trailblazer .sherpa-role { color: #8b5cf6; }
+        .sherpa-card.builder .sherpa-role { color: #10b981; }
+        .sherpa-card.basecamp .sherpa-role { color: #237cb8; }
+
+        .sherpa-mission {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .sherpa-members {
+            list-style: none;
+        }
+
+        .sherpa-members li {
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .sherpa-members li:last-child {
+            border-bottom: none;
+        }
+
+        .sherpa-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .sherpa-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Complexity Terrain */
+        .terrain-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .terrain-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .terrain-grid { grid-template-columns: 1fr; }
+        }
+
+        .terrain-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .terrain-card:hover {
+            border-color: rgba(220, 38, 38, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .terrain-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .terrain-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--complexity-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .terrain-pain {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .terrain-stat {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(220, 38, 38, 0.15);
+            border-radius: 100px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--complexity-color);
+        }
+
+        /* Destination Section */
+        .destination-container {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(35, 124, 184, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 24px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .destination-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--coder-color), var(--cortex-color), var(--kratix-color));
+        }
+
+        .destination-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .destination-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .destination-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--elegance-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .destination-tagline {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .destination-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .destination-grid { grid-template-columns: 1fr; }
+        }
+
+        .destination-pillar {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+        }
+
+        .pillar-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pillar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .destination-pillar:nth-child(1) .pillar-title { color: var(--coder-color); }
+        .destination-pillar:nth-child(2) .pillar-title { color: var(--cortex-color); }
+        .destination-pillar:nth-child(3) .pillar-title { color: var(--kratix-color); }
+
+        .pillar-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .capabilities-delivered {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .capabilities-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .capabilities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .cap-tag {
+            padding: 0.4rem 0.8rem;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--elegance-color);
+        }
+
+        /* Final Message */
+        .final-message {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 3rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .message-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-text {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .message-text strong {
+            color: var(--elegance-color);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">
+                <span>&larr;</span>
+                <span>Back to Critical Path</span>
+            </a>
+        </nav>
+
+        <header>
+            <div class="logo-badge">THE NOBLE ADVENTURE</div>
+            <h1>The Other Side of <span>Complexity</span></h1>
+            <p class="subtitle">A journey through the wilderness of fractured systems to the elegant simplicity of unified platform engineering</p>
+        </header>
+
+        <!-- Holmes Quote -->
+        <section class="quote-section">
+            <p class="quote-text">
+                "I would not give a fig for the simplicity on this side of complexity, but I would give my life for <span class="highlight">the simplicity on the other side of complexity</span>."
+            </p>
+            <p class="quote-author">— Oliver Wendell Holmes Sr.</p>
+        </section>
+
+        <!-- Section 1: The Three Realms -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-label">The Journey</div>
+                <h2 class="section-heading">Three Realms of Understanding</h2>
+            </div>
+
+            <div class="realms-container">
+                <div class="realm-card naive">
+                    <div class="realm-icon">🌫️</div>
+                    <div class="realm-title">This Side of Complexity</div>
+                    <div class="realm-subtitle">Naive Simplicity</div>
+                    <div class="realm-description">
+                        The illusion of simplicity. Chaos disguised as flexibility. "Just use whatever works."
+                        <ul class="realm-items">
+                            <li>Every team picks their own tools</li>
+                            <li>No standards, no guardrails</li>
+                            <li>Fast at first, then slow forever</li>
+                            <li>Technical debt accumulates silently</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="realm-card complexity">
+                    <div class="realm-icon">🌋</div>
+                    <div class="realm-title">The Wilderness</div>
+                    <div class="realm-subtitle">Where We Are Now</div>
+                    <div class="realm-description">
+                        The treacherous terrain of accumulated decisions. The weight of 30+ tools, 40 panes of glass, and $1B+ in lost productivity.
+                        <ul class="realm-items">
+                            <li>Fractured systems everywhere</li>
+                            <li>Disparate onboarding experiences</li>
+                            <li>Scattered, tribal documentation</li>
+                            <li>Cognitive overload crushing velocity</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="realm-card elegance">
+                    <div class="realm-icon">🏛️</div>
+                    <div class="realm-title">The Other Side</div>
+                    <div class="realm-subtitle">Elegant Simplicity</div>
+                    <div class="realm-description">
+                        The destination worth the journey. Simplicity earned through mastery. The Portal to Platform Engineering.
+                        <ul class="realm-items">
+                            <li>One catalog, one experience</li>
+                            <li>Golden paths, not gatekeeping</li>
+                            <li>Self-service with guardrails</li>
+                            <li>Frictionless. Compliant. Resilient.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Sherpas -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-label">The Expedition Team</div>
+                <h2 class="section-heading">Our Sherpas Through the Wilderness</h2>
+            </div>
+
+            <div class="sherpas-grid">
+                <!-- Summit Leaders -->
+                <div class="sherpa-card summit">
+                    <div class="sherpa-icon">🏔️</div>
+                    <div class="sherpa-role">Summit Leaders</div>
+                    <div class="sherpa-mission">Set the vision, fund the expedition</div>
+                    <ul class="sherpa-members">
+                        <li>
+                            <span class="sherpa-name">Amanda Rodriguez</span>
+                            <span class="sherpa-title">SVP, Platform Engineering</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Lisa Park</span>
+                            <span class="sherpa-title">VP, Platform Strategy</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Kevin O'Brien</span>
+                            <span class="sherpa-title">VP, Developer Enablement</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Trail Blazers -->
+                <div class="sherpa-card trailblazer">
+                    <div class="sherpa-icon">🧭</div>
+                    <div class="sherpa-role">Trail Blazers</div>
+                    <div class="sherpa-mission">Architect the path through complexity</div>
+                    <ul class="sherpa-members">
+                        <li>
+                            <span class="sherpa-name">Diana Chen</span>
+                            <span class="sherpa-title">Head of Platform Architecture</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Amir Hassan</span>
+                            <span class="sherpa-title">Platform Architect</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Nicole Foster</span>
+                            <span class="sherpa-title">Platform Architect</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Route Builders -->
+                <div class="sherpa-card builder">
+                    <div class="sherpa-icon">⛏️</div>
+                    <div class="sherpa-role">Route Builders</div>
+                    <div class="sherpa-mission">Construct the solutions & capabilities</div>
+                    <ul class="sherpa-members">
+                        <li>
+                            <span class="sherpa-name">Derek Chang</span>
+                            <span class="sherpa-title">Staff Engineer</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Sofia Ramirez</span>
+                            <span class="sherpa-title">Staff Engineer</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Tyler Morrison</span>
+                            <span class="sherpa-title">Staff Engineer</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Base Camp -->
+                <div class="sherpa-card basecamp">
+                    <div class="sherpa-icon">⛺</div>
+                    <div class="sherpa-role">Base Camp</div>
+                    <div class="sherpa-mission">Supplies, clearance & logistics</div>
+                    <ul class="sherpa-members">
+                        <li>
+                            <span class="sherpa-name">Marcus Chen</span>
+                            <span class="sherpa-title">Procurement — Sourcing Lead</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Jennifer Walsh</span>
+                            <span class="sherpa-title">VP, Information Security</span>
+                        </li>
+                        <li>
+                            <span class="sherpa-name">Rachel Nguyen</span>
+                            <span class="sherpa-title">Compliance Officer</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Complexity Terrain -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-label">The Terrain We Navigate</div>
+                <h2 class="section-heading">The Complexity We Must Cross</h2>
+            </div>
+
+            <div class="terrain-grid">
+                <div class="terrain-card">
+                    <div class="terrain-icon">🔧</div>
+                    <div class="terrain-title">Fractured Systems</div>
+                    <div class="terrain-pain">Every team has their own toolchain. No two applications deploy the same way. Integration is a nightmare of custom scripts.</div>
+                    <span class="terrain-stat">30+ disconnected tools</span>
+                </div>
+
+                <div class="terrain-card">
+                    <div class="terrain-icon">🪟</div>
+                    <div class="terrain-title">Panes of Glass</div>
+                    <div class="terrain-pain">Dozens of dashboards, portals, and interfaces. Context switching destroys focus. Finding information is a treasure hunt.</div>
+                    <span class="terrain-stat">40 different URLs</span>
+                </div>
+
+                <div class="terrain-card">
+                    <div class="terrain-icon">📚</div>
+                    <div class="terrain-title">Scattered Documentation</div>
+                    <div class="terrain-pain">Wikis, READMEs, Confluence pages, tribal knowledge. Half of it is outdated. The rest is impossible to find.</div>
+                    <span class="terrain-stat">Hodge-podge of sources</span>
+                </div>
+
+                <div class="terrain-card">
+                    <div class="terrain-icon">🚪</div>
+                    <div class="terrain-title">Disparate Onboarding</div>
+                    <div class="terrain-pain">Every team has their own onboarding process. New developers spend weeks getting productive. Institutional knowledge stays locked in heads.</div>
+                    <span class="terrain-stat">Weeks to productivity</span>
+                </div>
+
+                <div class="terrain-card">
+                    <div class="terrain-icon">🧠</div>
+                    <div class="terrain-title">Cognitive Overload</div>
+                    <div class="terrain-pain">Engineers spend more time navigating tools than building products. Decision fatigue. Analysis paralysis. Burnout.</div>
+                    <span class="terrain-stat">$1B+ addressable value</span>
+                </div>
+
+                <div class="terrain-card">
+                    <div class="terrain-icon">🔒</div>
+                    <div class="terrain-title">Compliance Chaos</div>
+                    <div class="terrain-pain">Security policies scattered across documents. Manual compliance checks. Audit season is a fire drill every time.</div>
+                    <span class="terrain-stat">Manual & reactive</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: The Elegant Destination -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-label">The Destination</div>
+                <h2 class="section-heading">The Elegant Simplicity We Seek</h2>
+            </div>
+
+            <div class="destination-container">
+                <div class="destination-header">
+                    <div class="destination-icon">🌅</div>
+                    <div class="destination-title">Portal to Platform Engineering</div>
+                    <div class="destination-tagline">Frictionless by Design. Compliant by Default. Resilient at Core.</div>
+                </div>
+
+                <div class="destination-grid">
+                    <div class="destination-pillar">
+                        <div class="pillar-icon">💻</div>
+                        <div class="pillar-title">Coder</div>
+                        <div class="pillar-desc">Instant, pre-configured development environments. Zero setup. Clone and code. Every workspace is production-like from day one.</div>
+                    </div>
+                    <div class="destination-pillar">
+                        <div class="pillar-icon">🧠</div>
+                        <div class="pillar-title">Cortex</div>
+                        <div class="pillar-desc">The single pane of glass. Service catalog, scorecards, workflows, intelligence. Everything visible, everything connected.</div>
+                    </div>
+                    <div class="destination-pillar">
+                        <div class="pillar-icon">⚙️</div>
+                        <div class="pillar-title">Kratix</div>
+                        <div class="pillar-desc">Golden paths through promises. Self-service infrastructure that's secure by default. Request it, get it, ship it.</div>
+                    </div>
+                </div>
+
+                <div class="capabilities-delivered">
+                    <div class="capabilities-label">Capabilities Delivered Through the Portal</div>
+                    <div class="capabilities-list">
+                        <span class="cap-tag">Java</span>
+                        <span class="cap-tag">.NET</span>
+                        <span class="cap-tag">Python</span>
+                        <span class="cap-tag">Go</span>
+                        <span class="cap-tag">Rolling Deploys</span>
+                        <span class="cap-tag">Blue/Green</span>
+                        <span class="cap-tag">Canary</span>
+                        <span class="cap-tag">AKS</span>
+                        <span class="cap-tag">EKS</span>
+                        <span class="cap-tag">Scorecards</span>
+                        <span class="cap-tag">DORA Metrics</span>
+                        <span class="cap-tag">One-Touch Assembly</span>
+                        <span class="cap-tag">Policy-as-Code</span>
+                        <span class="cap-tag">1,690 Apps</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Message -->
+        <section class="final-message">
+            <div class="message-icon">⚔️</div>
+            <p class="message-text">
+                The journey through complexity is not a retreat from difficulty — it is the <strong>noble adventure</strong> of mastering it. Our sherpas don't avoid the wilderness; they know every treacherous path and guide us through. On the other side awaits not naive simplicity, but <strong>elegant simplicity</strong> — earned, deliberate, and powerful.
+            </p>
+        </section>
+
+        <footer>
+            <p class="footer-text">PLATFORM AS A PRODUCT • THE NOBLE ADVENTURE</p>
+        </footer>
+    </div>
+</body>
+</html>
