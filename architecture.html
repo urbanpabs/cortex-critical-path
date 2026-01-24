@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture | Platform as a Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Fiserv Brand Colors */
+            --fiserv-blue: #237cb8;
+            --fiserv-blue-light: #2e8bc9;
+            --fiserv-orange: #ff6600;
+            --fiserv-orange-light: #fb6400;
+            --fiserv-black: #0e0e0e;
+            --fiserv-dark: #333333;
+            --fiserv-gray: #666666;
+            --fiserv-gray-light: #909090;
+            --fiserv-silver: #bbbbbb;
+            --fiserv-white: #ffffff;
+
+            /* Applied Theme */
+            --bg-primary: #0e0e0e;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #252525;
+            --bg-card-hover: #2f2f2f;
+
+            --text-primary: #f4f4f4;
+            --text-secondary: #bbbbbb;
+            --text-muted: #909090;
+
+            /* Product Colors */
+            --coder-color: #10b981;
+            --cortex-color: #237cb8;
+            --kratix-color: #8b5cf6;
+
+            --border-subtle: rgba(187, 187, 187, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(35, 124, 184, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 102, 0, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(102, 102, 102, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 102, 102, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .logo-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--fiserv-orange);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        h1 .highlight {
+            background: linear-gradient(90deg, var(--cortex-color), var(--kratix-color), var(--coder-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Styles */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* Landscape Container */
+        .landscape-section {
+            animation: slideUp 0.6s ease-out 0.3s both;
+            margin-bottom: 3rem;
+        }
+
+        .landscape-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .landscape-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--fiserv-blue), var(--fiserv-orange));
+        }
+
+        .landscape-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .landscape-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .landscape-title h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(35, 124, 184, 0.15);
+            border: 1px solid rgba(35, 124, 184, 0.3);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--fiserv-blue-light);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .source-badge:hover {
+            background: rgba(35, 124, 184, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .source-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .landscape-image-container {
+            position: relative;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .landscape-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        .landscape-image:hover {
+            transform: scale(1.02);
+        }
+
+        .landscape-image.zoomed {
+            cursor: zoom-out;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            max-width: 95vw;
+            max-height: 95vh;
+            z-index: 1000;
+            border-radius: 12px;
+            box-shadow: 0 25px 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .landscape-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            cursor: zoom-out;
+        }
+
+        .landscape-overlay.active {
+            display: block;
+        }
+
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-subtle);
+            border-top-color: var(--fiserv-orange);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .landscape-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .update-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .update-info .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--coder-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .zoom-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Info Cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+            animation: slideUp 0.6s ease-out 0.5s both;
+        }
+
+        @media (max-width: 900px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .info-card.plan .info-icon { background: rgba(35, 124, 184, 0.2); }
+        .info-card.build .info-icon { background: rgba(255, 102, 0, 0.2); }
+        .info-card.run .info-icon { background: rgba(16, 185, 129, 0.2); }
+
+        .info-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .info-card.plan h4 { color: var(--fiserv-blue); }
+        .info-card.build h4 { color: var(--fiserv-orange); }
+        .info-card.run h4 { color: var(--coder-color); }
+
+        .info-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            animation: fadeIn 0.8s ease-out 0.7s both;
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .landscape-card {
+                padding: 1.25rem;
+            }
+
+            .landscape-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="landscape-overlay" id="overlay"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">
+                <span>&larr;</span>
+                <span>Back to Critical Path</span>
+            </a>
+        </nav>
+
+        <header>
+            <div class="logo-badge">PLATFORM AS A PRODUCT</div>
+            <h1>Platform <span class="highlight">Architecture</span></h1>
+            <p class="subtitle">Industry-standard platform engineering tooling landscape based on hundreds of platform implementations across organizations of all sizes</p>
+        </header>
+
+        <!-- Landscape Section -->
+        <div class="landscape-section">
+            <div class="section-header">
+                <div class="section-label">Platform Engineering Reference</div>
+                <h2 class="section-title">Platform Tooling Landscape</h2>
+            </div>
+
+            <div class="landscape-card">
+                <div class="landscape-header">
+                    <div class="landscape-title">
+                        <span style="font-size: 1.5rem;">🗺️</span>
+                        <h3>Platform Engineering Tooling Landscape</h3>
+                    </div>
+                    <a href="https://platformengineering.org/platform-tooling" target="_blank" rel="noopener" class="source-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        platformengineering.org
+                    </a>
+                </div>
+
+                <div class="landscape-image-container" id="imageContainer">
+                    <div class="loading-indicator" id="loadingIndicator">
+                        <div class="loading-spinner"></div>
+                        <span>Loading landscape from source...</span>
+                    </div>
+                    <img
+                        src="https://cdn.prod.website-files.com/6489de99f6259b6eef4fae4f/693ff72e56fa68a35d79b6be_platform-engineering-tooling-landscape-2025-12-15.webp"
+                        alt="Platform Engineering Tooling Landscape"
+                        class="landscape-image"
+                        id="landscapeImage"
+                        loading="eager"
+                        onload="document.getElementById('loadingIndicator').style.display='none';"
+                        onclick="toggleZoom('landscapeImage')"
+                    >
+                </div>
+
+                <div class="landscape-footer">
+                    <div class="update-info">
+                        <span class="live-dot"></span>
+                        <span>Live from platformengineering.org - updates automatically</span>
+                    </div>
+                    <div class="zoom-hint">
+                        <span>Click image to zoom</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cortex Section -->
+        <div class="landscape-section" style="animation-delay: 0.4s;">
+            <div class="section-header">
+                <div class="section-label">Internal Developer Platform</div>
+                <h2 class="section-title">Cortex Platform Overview</h2>
+            </div>
+
+            <div class="landscape-card" style="--card-accent: var(--cortex-color);">
+                <div class="landscape-header">
+                    <div class="landscape-title">
+                        <span style="font-size: 1.5rem;">🧠</span>
+                        <h3>What is Cortex?</h3>
+                    </div>
+                    <a href="https://www.cortex.io/products/what-is-cortex" target="_blank" rel="noopener" class="source-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        cortex.io
+                    </a>
+                </div>
+
+                <div class="landscape-image-container" id="cortexImageContainer">
+                    <div class="loading-indicator" id="cortexLoadingIndicator">
+                        <div class="loading-spinner"></div>
+                        <span>Loading from Cortex...</span>
+                    </div>
+                    <img
+                        src="https://a-us.storyblok.com/f/1021527/2576x1800/497f88abdc/what-is-cortex-hero.png"
+                        alt="What is Cortex - Internal Developer Platform"
+                        class="landscape-image"
+                        id="cortexImage"
+                        loading="eager"
+                        onload="document.getElementById('cortexLoadingIndicator').style.display='none';"
+                        onclick="toggleZoom('cortexImage')"
+                    >
+                </div>
+
+                <div class="landscape-footer">
+                    <div class="update-info">
+                        <span class="live-dot"></span>
+                        <span>Live from cortex.io - updates automatically</span>
+                    </div>
+                    <div class="zoom-hint">
+                        <span>Click image to zoom</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="info-grid">
+            <div class="info-card plan">
+                <div class="info-card-header">
+                    <div class="info-icon">📋</div>
+                    <h4>Plan & Design</h4>
+                </div>
+                <p>Project management, documentation, design systems, and collaboration tools that help teams plan and coordinate platform development work.</p>
+            </div>
+
+            <div class="info-card build">
+                <div class="info-card-header">
+                    <div class="info-icon">🔨</div>
+                    <h4>Build & Deliver</h4>
+                </div>
+                <p>Source control, CI/CD pipelines, artifact management, and developer environments that enable teams to build and ship software efficiently.</p>
+            </div>
+
+            <div class="info-card run">
+                <div class="info-card-header">
+                    <div class="info-icon">🚀</div>
+                    <h4>Run & Operate</h4>
+                </div>
+                <p>Infrastructure provisioning, container orchestration, observability, and security tools that keep platforms running reliably in production.</p>
+            </div>
+        </div>
+
+        <footer>
+            <p class="footer-text">PLATFORM AS A PRODUCT • ARCHITECTURE REFERENCE</p>
+        </footer>
+    </div>
+
+    <script>
+        let currentZoomedImage = null;
+
+        function toggleZoom(imageId) {
+            const image = document.getElementById(imageId || 'landscapeImage');
+            const overlay = document.getElementById('overlay');
+
+            // If clicking the same image that's zoomed, close it
+            if (image.classList.contains('zoomed')) {
+                image.classList.remove('zoomed');
+                overlay.classList.remove('active');
+                currentZoomedImage = null;
+            } else {
+                // Close any currently zoomed image first
+                if (currentZoomedImage) {
+                    currentZoomedImage.classList.remove('zoomed');
+                }
+                // Zoom the new image
+                image.classList.add('zoomed');
+                overlay.classList.add('active');
+                currentZoomedImage = image;
+            }
+        }
+
+        document.getElementById('overlay').addEventListener('click', function() {
+            if (currentZoomedImage) {
+                currentZoomedImage.classList.remove('zoomed');
+                currentZoomedImage = null;
+            }
+            this.classList.remove('active');
+        });
+
+        // Close zoom on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('overlay');
+                if (currentZoomedImage) {
+                    currentZoomedImage.classList.remove('zoomed');
+                    currentZoomedImage = null;
+                }
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

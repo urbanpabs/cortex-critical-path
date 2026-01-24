@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Operations | Platform as a Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Fiserv Brand Colors */
+            --fiserv-blue: #237cb8;
+            --fiserv-blue-light: #2e8bc9;
+            --fiserv-orange: #ff6600;
+            --fiserv-orange-light: #fb6400;
+            --fiserv-black: #0e0e0e;
+            --fiserv-dark: #333333;
+            --fiserv-gray: #666666;
+            --fiserv-gray-light: #909090;
+            --fiserv-silver: #bbbbbb;
+            --fiserv-white: #ffffff;
+
+            /* Applied Theme */
+            --bg-primary: #0e0e0e;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #252525;
+            --bg-card-hover: #2f2f2f;
+
+            --text-primary: #f4f4f4;
+            --text-secondary: #bbbbbb;
+            --text-muted: #909090;
+
+            /* Product Colors */
+            --coder-color: #10b981;
+            --cortex-color: #237cb8;
+            --kratix-color: #8b5cf6;
+
+            /* Threat Colors */
+            --threat-critical: #ef4444;
+            --threat-high: #f97316;
+            --threat-medium: #eab308;
+            --threat-low: #22c55e;
+
+            --border-subtle: rgba(187, 187, 187, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(35, 124, 184, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 102, 0, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(102, 102, 102, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 102, 102, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .logo-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--fiserv-orange);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        h1 .highlight {
+            background: linear-gradient(90deg, var(--cortex-color), var(--kratix-color), var(--coder-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Tabs */
+        .ops-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .ops-tab {
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ops-tab:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--fiserv-blue);
+            color: var(--text-primary);
+        }
+
+        .ops-tab.active {
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        .ops-tab .tab-icon {
+            font-size: 1.25rem;
+        }
+
+        /* Content Grid */
+        .ops-content {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Codex Cards */
+        .codex-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .codex-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--fiserv-blue), var(--fiserv-orange));
+        }
+
+        .codex-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(35, 124, 184, 0.2);
+            border-color: var(--fiserv-blue);
+        }
+
+        .codex-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .codex-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--fiserv-orange);
+            font-weight: 600;
+        }
+
+        .codex-rarity {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            background: rgba(35, 124, 184, 0.2);
+            color: var(--fiserv-blue-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .codex-card-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin: 1rem 0;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .codex-card-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .codex-card-class {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .codex-card-types {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .type-badge {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Bestiary Cards */
+        .bestiary-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .bestiary-card.threat-critical {
+            border-color: var(--threat-critical);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), var(--bg-card));
+        }
+
+        .bestiary-card.threat-high {
+            border-color: var(--threat-high);
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), var(--bg-card));
+        }
+
+        .bestiary-card.threat-medium {
+            border-color: var(--threat-medium);
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), var(--bg-card));
+        }
+
+        .bestiary-card.threat-epic {
+            border-color: var(--kratix-color);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), var(--bg-card));
+            animation: epicGlow 3s infinite alternate;
+        }
+
+        @keyframes epicGlow {
+            from { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            to { box-shadow: 0 0 40px rgba(255, 102, 0, 0.4); }
+        }
+
+        .bestiary-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .bestiary-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .bestiary-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--fiserv-orange);
+            font-weight: 600;
+        }
+
+        .threat-badge {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .threat-badge.threat-critical {
+            background: var(--threat-critical);
+            color: white;
+        }
+
+        .threat-badge.threat-high {
+            background: var(--threat-high);
+            color: white;
+        }
+
+        .threat-badge.threat-medium {
+            background: var(--threat-medium);
+            color: var(--bg-primary);
+        }
+
+        .threat-badge.threat-epic {
+            background: var(--kratix-color);
+            color: white;
+        }
+
+        .bestiary-card-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .bestiary-card-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .bestiary-card-type {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Spellbook Cards */
+        .spell-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .spell-card.rank-s {
+            border-color: var(--fiserv-orange);
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.1), var(--bg-card));
+        }
+
+        .spell-card.rank-a {
+            border-color: var(--fiserv-blue);
+            background: linear-gradient(135deg, rgba(35, 124, 184, 0.1), var(--bg-card));
+        }
+
+        .spell-card.rank-b {
+            border-color: var(--coder-color);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), var(--bg-card));
+        }
+
+        .spell-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(35, 124, 184, 0.2);
+        }
+
+        .spell-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .spell-rank {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .spell-rank.rank-s {
+            background: var(--fiserv-orange);
+            color: white;
+        }
+
+        .spell-rank.rank-a {
+            background: var(--fiserv-blue);
+            color: white;
+        }
+
+        .spell-rank.rank-b {
+            background: var(--coder-color);
+            color: white;
+        }
+
+        .spell-category {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .spell-card-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .spell-card-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .spell-stats-mini {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .mini-stat {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .mini-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .mini-value {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 2px solid var(--fiserv-blue);
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 100px rgba(35, 124, 184, 0.4);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--threat-critical);
+            border: none;
+            color: white;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: white;
+            color: var(--threat-critical);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .modal-header-left {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .modal-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin: 0.25rem 0;
+        }
+
+        .modal-class {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        .modal-types {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .type-badge-large {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: white;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--fiserv-orange);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .info-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Stats Bars */
+        .stats-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .stat-row {
+            margin-bottom: 1rem;
+        }
+
+        .stat-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .stat-value {
+            color: var(--fiserv-orange);
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-bar-bg {
+            height: 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--fiserv-blue), var(--fiserv-orange));
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        /* Abilities List */
+        .abilities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .ability-item {
+            background: var(--bg-card);
+            border-left: 4px solid var(--fiserv-blue);
+            border-radius: 0 12px 12px 0;
+            padding: 1rem 1.25rem;
+        }
+
+        .ability-name {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .ability-effect {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Traits Lists */
+        .traits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .traits-list li {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .traits-list li::before {
+            content: '>';
+            color: var(--fiserv-orange);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .modal-section-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Frameworks/Tools badges */
+        .frameworks-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .framework-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--fiserv-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Attacks List */
+        .attacks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .attack-item {
+            background: var(--bg-card);
+            border: 1px solid var(--threat-critical);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .attack-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .attack-name {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .attack-damage {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--threat-critical);
+            font-weight: 700;
+        }
+
+        .attack-effect {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* Drops */
+        .drops-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .drop-badge {
+            background: var(--fiserv-orange);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Spell Stats Grid */
+        .spell-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .spell-stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .spell-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .spell-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--fiserv-orange);
+        }
+
+        /* Phases */
+        .phases-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .phase-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--fiserv-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        /* Combos */
+        .combos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .combo-item {
+            background: var(--bg-card);
+            border-left: 4px solid var(--fiserv-orange);
+            border-radius: 0 12px 12px 0;
+            padding: 1rem;
+        }
+
+        .combo-tools {
+            color: var(--fiserv-blue);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .combo-effect {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .ops-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-section-split {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .modal-header-left {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <button class="modal-close" onclick="closeModal()">x</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">
+                <span>&larr;</span>
+                <span>Back to Critical Path</span>
+            </a>
+        </nav>
+
+        <header>
+            <div class="logo-badge">PLATFORM AS A PRODUCT</div>
+            <h1>Platform <span class="highlight">Operations</span></h1>
+            <p class="subtitle">Encyclopedia of Platform Tools, Operational Beasts, and Runbook Magic</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="ops-tabs">
+            <button class="ops-tab active" data-tab="codex" onclick="switchTab('codex')">
+                <span class="tab-icon">📖</span>
+                <span>Operations Codex</span>
+            </button>
+            <button class="ops-tab" data-tab="bestiary" onclick="switchTab('bestiary')">
+                <span class="tab-icon">👾</span>
+                <span>Incident Bestiary</span>
+            </button>
+            <button class="ops-tab" data-tab="spellbook" onclick="switchTab('spellbook')">
+                <span class="tab-icon">✨</span>
+                <span>Runbook Spellbook</span>
+            </button>
+        </div>
+
+        <!-- Codex Content -->
+        <div class="ops-content" id="codex-content">
+            <div class="ops-grid" id="codex-grid"></div>
+        </div>
+
+        <!-- Bestiary Content -->
+        <div class="ops-content hidden" id="bestiary-content">
+            <div class="ops-grid" id="bestiary-grid"></div>
+        </div>
+
+        <!-- Spellbook Content -->
+        <div class="ops-content hidden" id="spellbook-content">
+            <div class="ops-grid" id="spellbook-grid"></div>
+        </div>
+
+        <footer>
+            <p class="footer-text">PLATFORM AS A PRODUCT * OPERATIONS ENCYCLOPEDIA</p>
+        </footer>
+    </div>
+
+    <script>
+        // Operations Codex Data
+        const OPERATIONS_CODEX = {
+            cortex: {
+                id: 'cortex',
+                dexNumber: '001',
+                name: 'Cortex',
+                icon: '🧠',
+                class: 'Internal Developer Portal',
+                type: ['IDP', 'Catalog', 'Scorecards'],
+                height: 'Enterprise Scale',
+                weight: 'SaaS',
+                rarity: 'Legendary',
+                stats: { hp: 240, mp: 220, attack: 200, defense: 235, speed: 190, special: 250 },
+                description: 'The brain of your platform engineering stack. Cortex provides a unified developer portal with service catalog, scorecards, and engineering intelligence to drive platform adoption and developer productivity.',
+                abilities: [
+                    { name: 'Service Catalog', effect: 'Unified view of all services, APIs, and infrastructure' },
+                    { name: 'Scorecards', effect: 'Measure and improve service maturity with custom rules' },
+                    { name: 'Scaffolding', effect: 'Generate new services from templates in minutes' }
+                ],
+                strengths: ['Real-time engineering intelligence', 'Customizable CQL query language', 'Deep integrations ecosystem', 'Initiative tracking and reporting'],
+                weaknesses: ['Requires data integration setup', 'Learning curve for CQL', 'Enterprise pricing'],
+                habitat: 'Platform Engineering Teams, DevOps Organizations, Enterprise IT',
+                popularFrameworks: ['Backstage Migration', 'ServiceNow Integration', 'PagerDuty', 'Datadog', 'GitHub']
+            },
+            coder: {
+                id: 'coder',
+                dexNumber: '002',
+                name: 'Coder',
+                icon: '💻',
+                class: 'Cloud Development Environment',
+                type: ['CDE', 'Remote Dev', 'Workspaces'],
+                height: 'Team Scale',
+                weight: 'Self-Hosted/Cloud',
+                rarity: 'Rare',
+                stats: { hp: 210, mp: 240, attack: 185, defense: 200, speed: 230, special: 220 },
+                description: 'Instant, consistent development environments in the cloud. Coder eliminates "works on my machine" by providing reproducible workspaces that spin up in seconds.',
+                abilities: [
+                    { name: 'Workspace Templates', effect: 'Define infrastructure-as-code dev environments' },
+                    { name: 'Instant Onboarding', effect: 'New developers productive in minutes, not days' },
+                    { name: 'Resource Efficiency', effect: 'Centralized compute reduces laptop requirements' }
+                ],
+                strengths: ['Eliminates environment drift', 'Supports any IDE via code-server', 'GPU and high-compute workloads', 'Air-gapped deployment support'],
+                weaknesses: ['Requires Kubernetes infrastructure', 'Network latency for remote dev', 'Initial template creation effort'],
+                habitat: 'AI/ML Teams, Security-Conscious Orgs, Remote-First Companies',
+                popularFrameworks: ['Terraform', 'Docker', 'Kubernetes', 'VS Code', 'JetBrains']
+            },
+            kratix: {
+                id: 'kratix',
+                dexNumber: '003',
+                name: 'Kratix',
+                icon: '⚙️',
+                class: 'Platform Orchestrator',
+                type: ['GitOps', 'Promises', 'Multi-Cluster'],
+                height: 'Multi-Cloud',
+                weight: 'Open Source',
+                rarity: 'Rare',
+                stats: { hp: 225, mp: 210, attack: 195, defense: 220, speed: 175, special: 235 },
+                description: 'Platform-as-a-Product framework for building internal platforms. Kratix uses "Promises" to define and deliver platform capabilities across multiple clusters and clouds.',
+                abilities: [
+                    { name: 'Promises', effect: 'Declarative contracts for platform capabilities' },
+                    { name: 'Multi-Destination', effect: 'Deploy workloads to any Kubernetes cluster' },
+                    { name: 'Composable Pipelines', effect: 'Chain transformations for complex workflows' }
+                ],
+                strengths: ['True platform-as-code approach', 'GitOps-native architecture', 'Extensible promise system', 'Multi-cloud by design'],
+                weaknesses: ['Kubernetes-only destinations', 'Smaller community than alternatives', 'Requires GitOps understanding'],
+                habitat: 'Platform Teams, Multi-Cloud Enterprises, GitOps Adopters',
+                popularFrameworks: ['ArgoCD', 'Flux', 'Crossplane', 'Kubernetes', 'Helm']
+            },
+            argocd: {
+                id: 'argocd',
+                dexNumber: '004',
+                name: 'ArgoCD',
+                icon: '🐙',
+                class: 'GitOps Controller',
+                type: ['GitOps', 'CD', 'Kubernetes'],
+                height: 'Cluster Scale',
+                weight: 'Open Source',
+                rarity: 'Common',
+                stats: { hp: 200, mp: 195, attack: 210, defense: 215, speed: 200, special: 205 },
+                description: 'The GitOps continuous delivery tool for Kubernetes. ArgoCD keeps your clusters in sync with Git repositories, enabling declarative, auditable deployments.',
+                abilities: [
+                    { name: 'Declarative GitOps', effect: 'Git as single source of truth for deployments' },
+                    { name: 'Auto-Sync', effect: 'Automatic drift detection and remediation' },
+                    { name: 'Multi-Tenancy', effect: 'Manage multiple apps and clusters safely' }
+                ],
+                strengths: ['CNCF graduated project', 'Excellent UI and CLI', 'SSO and RBAC support', 'ApplicationSets for scaling'],
+                weaknesses: ['Kubernetes-only', 'Can be complex at scale', 'Resource intensive'],
+                habitat: 'Kubernetes Clusters, Platform Teams, DevOps Organizations',
+                popularFrameworks: ['Helm', 'Kustomize', 'Jsonnet', 'Kubernetes', 'Vault']
+            },
+            prometheus: {
+                id: 'prometheus',
+                dexNumber: '005',
+                name: 'Prometheus',
+                icon: '🔥',
+                class: 'Metrics Guardian',
+                type: ['Monitoring', 'Alerting', 'TSDB'],
+                height: 'Cluster Scale',
+                weight: 'Open Source',
+                rarity: 'Common',
+                stats: { hp: 215, mp: 180, attack: 190, defense: 230, speed: 185, special: 210 },
+                description: 'The cloud-native monitoring standard. Prometheus collects and stores metrics as time series data, enabling powerful queries and alerting for your infrastructure.',
+                abilities: [
+                    { name: 'PromQL', effect: 'Powerful query language for metrics analysis' },
+                    { name: 'Pull-Based Collection', effect: 'Scrapes targets for reliable metric gathering' },
+                    { name: 'Alertmanager', effect: 'Flexible alerting with deduplication and routing' }
+                ],
+                strengths: ['Industry standard for cloud-native', 'Massive ecosystem of exporters', 'Highly reliable and battle-tested', 'Native Kubernetes integration'],
+                weaknesses: ['Local storage limitations', 'No built-in long-term retention', 'PromQL learning curve'],
+                habitat: 'Kubernetes, Cloud Infrastructure, Microservices',
+                popularFrameworks: ['Grafana', 'Alertmanager', 'Thanos', 'Cortex', 'Victoria Metrics']
+            },
+            terraform: {
+                id: 'terraform',
+                dexNumber: '006',
+                name: 'Terraform',
+                icon: '🏗️',
+                class: 'Infrastructure Mage',
+                type: ['IaC', 'Multi-Cloud', 'Provisioning'],
+                height: 'Enterprise Scale',
+                weight: 'Open Source/Enterprise',
+                rarity: 'Common',
+                stats: { hp: 230, mp: 200, attack: 220, defense: 210, speed: 165, special: 225 },
+                description: 'Infrastructure as Code for any cloud. Terraform uses declarative HCL to provision and manage infrastructure across AWS, Azure, GCP, and hundreds of other providers.',
+                abilities: [
+                    { name: 'State Management', effect: 'Tracks infrastructure state for safe changes' },
+                    { name: 'Plan & Apply', effect: 'Preview changes before applying to production' },
+                    { name: 'Provider Ecosystem', effect: 'Manage anything with an API' }
+                ],
+                strengths: ['Multi-cloud by design', 'Massive provider ecosystem', 'Mature and battle-tested', 'Strong community and modules'],
+                weaknesses: ['State management complexity', 'HCL limitations for logic', 'License changes in 2023'],
+                habitat: 'Cloud Infrastructure, Platform Teams, DevOps',
+                popularFrameworks: ['AWS', 'Azure', 'GCP', 'Kubernetes', 'Vault']
+            }
+        };
+
+        // Incident Bestiary Data
+        const INCIDENT_BESTIARY = [
+            {
+                id: 'cascading-failure-hydra',
+                number: '101',
+                name: 'Cascading Failure Hydra',
+                icon: '🐉',
+                type: 'Distributed Disaster',
+                threat: 'Critical',
+                stats: { hp: 280, attack: 200, defense: 150, speed: 180 },
+                description: 'A multi-headed beast that spawns from a single service failure. Each head represents a dependent service that falls, creating an exponential outage cascade.',
+                habitat: 'Tightly-coupled microservices, Missing circuit breakers, Synchronous dependencies',
+                weakness: ['Circuit breakers (Hystrix, Resilience4j)', 'Bulkhead isolation patterns', 'Async communication with queues', 'Graceful degradation strategies'],
+                attacks: [
+                    { name: 'Dependency Storm', damage: 150, effect: 'Multiple services become unavailable' },
+                    { name: 'Timeout Tsunami', damage: 120, effect: 'Request queues overflow' },
+                    { name: 'Resource Exhaustion', damage: 180, effect: 'CPU/Memory spike across cluster' }
+                ],
+                drops: ['Circuit Breaker Pattern', 'Chaos Engineering Playbook', 'Service Mesh Config']
+            },
+            {
+                id: 'certificate-expiry-specter',
+                number: '102',
+                name: 'Certificate Expiry Specter',
+                icon: '👻',
+                type: 'Silent Killer',
+                threat: 'High',
+                stats: { hp: 150, attack: 255, defense: 80, speed: 50 },
+                description: 'A phantom that strikes at the worst possible moment - usually 2 AM on a holiday. Manifests when TLS certificates silently expire, breaking all secure communications.',
+                habitat: 'Production load balancers, API gateways, Service mesh mTLS, Ingress controllers',
+                weakness: ['cert-manager with auto-renewal', 'Certificate monitoring alerts', 'Automated rotation with Vault', 'Calendar reminders as backup'],
+                attacks: [
+                    { name: 'Silent Expiration', damage: 255, effect: 'All HTTPS traffic fails instantly' },
+                    { name: 'Trust Chain Break', damage: 180, effect: 'Intermediate cert invalidation' },
+                    { name: 'mTLS Collapse', damage: 200, effect: 'Service-to-service auth fails' }
+                ],
+                drops: ['cert-manager Helm Chart', 'Monitoring Dashboard', 'Renewal Automation Script']
+            },
+            {
+                id: 'kubernetes-oom-kraken',
+                number: '103',
+                name: 'Kubernetes OOM Kraken',
+                icon: '🦑',
+                type: 'Resource Monster',
+                threat: 'High',
+                stats: { hp: 220, attack: 175, defense: 190, speed: 140 },
+                description: 'A tentacled horror that emerges when containers exceed memory limits. Drags pods into the abyss with OOMKilled status, often taking entire nodes with it.',
+                habitat: 'JVM applications without limits, Memory leak containers, Undersized resource requests',
+                weakness: ['Proper resource limits and requests', 'Vertical Pod Autoscaler', 'Memory profiling and optimization', 'Pod Disruption Budgets'],
+                attacks: [
+                    { name: 'OOMKill Strike', damage: 160, effect: 'Pod terminated without warning' },
+                    { name: 'Node Pressure', damage: 140, effect: 'Eviction of multiple pods' },
+                    { name: 'Cascading Restarts', damage: 120, effect: 'CrashLoopBackOff hell' }
+                ],
+                drops: ['Resource Quota Template', 'VPA Configuration', 'Memory Profiler Setup']
+            },
+            {
+                id: 'dns-resolution-demon',
+                number: '104',
+                name: 'DNS Resolution Demon',
+                icon: '😈',
+                type: 'Network Nightmare',
+                threat: 'Critical',
+                stats: { hp: 180, attack: 220, defense: 100, speed: 255 },
+                description: 'An ancient evil that corrupts the very fabric of network communication. When DNS fails, nothing can find anything else - total chaos ensues.',
+                habitat: 'CoreDNS pods, External DNS providers, ndots:5 configurations, DNS caching layers',
+                weakness: ['DNS caching with NodeLocal DNSCache', 'Proper ndots configuration', 'DNS monitoring and alerting', 'Fallback DNS servers'],
+                attacks: [
+                    { name: 'Resolution Failure', damage: 200, effect: 'Services cannot discover each other' },
+                    { name: 'TTL Poison', damage: 150, effect: 'Stale records cause misrouting' },
+                    { name: 'Query Flood', damage: 180, effect: 'DNS server overwhelmed' }
+                ],
+                drops: ['CoreDNS Tuning Guide', 'NodeLocal DNSCache Config', 'DNS Debugging Toolkit']
+            },
+            {
+                id: 'configuration-drift-golem',
+                number: '105',
+                name: 'Configuration Drift Golem',
+                icon: '🗿',
+                type: 'Entropy Beast',
+                threat: 'Epic',
+                stats: { hp: 350, attack: 130, defense: 280, speed: 40 },
+                description: 'A massive construct built from accumulated manual changes and hotfixes. Grows stronger over time as environments diverge from their declared state.',
+                habitat: 'Long-running environments, Manual kubectl edits, Missing GitOps, Snowflake servers',
+                weakness: ['GitOps with ArgoCD/Flux', 'Infrastructure as Code', 'Immutable infrastructure', 'Drift detection tools'],
+                attacks: [
+                    { name: 'Environment Divergence', damage: 100, effect: 'Prod differs from staging' },
+                    { name: 'Deployment Failure', damage: 150, effect: 'Changes fail unexpectedly' },
+                    { name: 'Audit Nightmare', damage: 120, effect: 'Cannot explain current state' }
+                ],
+                drops: ['GitOps Implementation Plan', 'Drift Detection Dashboard', 'IaC Migration Guide']
+            },
+            {
+                id: 'secret-sprawl-shadow',
+                number: '106',
+                name: 'Secret Sprawl Shadow',
+                icon: '🕳️',
+                type: 'Security Horror',
+                threat: 'Critical',
+                stats: { hp: 200, attack: 250, defense: 120, speed: 200 },
+                description: 'A dark entity that feeds on exposed credentials. Lurks in environment variables, Git history, and container images, waiting to strike.',
+                habitat: 'Hardcoded secrets, Git commit history, Docker images, CI/CD logs',
+                weakness: ['HashiCorp Vault or similar', 'External Secrets Operator', 'Secret scanning in CI', 'Kubernetes Secrets encryption'],
+                attacks: [
+                    { name: 'Credential Exposure', damage: 250, effect: 'Secrets leaked publicly' },
+                    { name: 'Privilege Escalation', damage: 200, effect: 'Attacker gains access' },
+                    { name: 'Compliance Violation', damage: 180, effect: 'Audit failure, fines' }
+                ],
+                drops: ['Vault Setup Guide', 'Secret Rotation Playbook', 'Git Secret Scanner']
+            }
+        ];
+
+        // Runbook Spellbook Data
+        const RUNBOOK_SPELLBOOK = {
+            incidentResponse: {
+                id: 'incident-response',
+                name: 'Incident Response',
+                icon: '🚨',
+                category: 'Emergency',
+                rank: 'S',
+                complexity: 85,
+                timeToExecute: '5-60 min',
+                automationLevel: 70,
+                description: 'The master spell for handling production incidents. Combines detection, triage, mitigation, and communication into a coordinated response.',
+                phases: ['Detect', 'Triage', 'Mitigate', 'Communicate', 'Resolve', 'Post-Mortem'],
+                comboChains: [
+                    { tools: ['PagerDuty', 'Slack', 'Zoom'], effect: 'Rapid Team Assembly' },
+                    { tools: ['Datadog', 'Grafana', 'Logs'], effect: 'Root Cause Analysis' },
+                    { tools: ['Runbook', 'Automation', 'Rollback'], effect: 'Quick Mitigation' }
+                ],
+                pros: ['Reduces MTTR significantly', 'Clear roles and responsibilities', 'Improves team coordination', 'Builds institutional knowledge'],
+                cons: ['Requires practice and drills', 'Can be stressful under pressure', 'Needs constant refinement']
+            },
+            blueGreenDeploy: {
+                id: 'blue-green-deploy',
+                name: 'Blue-Green Deployment',
+                icon: '🔵🟢',
+                category: 'Deployment',
+                rank: 'A',
+                complexity: 65,
+                timeToExecute: '10-30 min',
+                automationLevel: 90,
+                description: 'A deployment strategy that maintains two identical production environments. Switch traffic instantly between blue and green for zero-downtime releases.',
+                phases: ['Deploy to Inactive', 'Smoke Test', 'Switch Traffic', 'Monitor', 'Cleanup'],
+                comboChains: [
+                    { tools: ['ArgoCD', 'Istio', 'Flagger'], effect: 'Automated Progressive Delivery' },
+                    { tools: ['Terraform', 'ALB', 'Route53'], effect: 'Infrastructure-Level Switching' },
+                    { tools: ['Kubernetes', 'Service', 'Ingress'], effect: 'Native K8s Blue-Green' }
+                ],
+                pros: ['Zero downtime deployments', 'Instant rollback capability', 'Full environment testing', 'Reduced deployment risk'],
+                cons: ['Requires double infrastructure', 'Database migrations complex', 'Cost overhead']
+            },
+            chaosExperiment: {
+                id: 'chaos-experiment',
+                name: 'Chaos Experiment',
+                icon: '🌪️',
+                category: 'Resilience',
+                rank: 'A',
+                complexity: 75,
+                timeToExecute: '30-120 min',
+                automationLevel: 60,
+                description: 'Controlled failure injection to test system resilience. Break things on purpose to find weaknesses before they find you in production.',
+                phases: ['Hypothesis', 'Blast Radius', 'Execute', 'Observe', 'Analyze', 'Improve'],
+                comboChains: [
+                    { tools: ['Chaos Monkey', 'Gremlin', 'LitmusChaos'], effect: 'Automated Chaos Testing' },
+                    { tools: ['Prometheus', 'Grafana', 'Alerts'], effect: 'Observability During Chaos' },
+                    { tools: ['Feature Flags', 'Circuit Breakers'], effect: 'Controlled Blast Radius' }
+                ],
+                pros: ['Finds hidden weaknesses', 'Builds confidence in systems', 'Improves incident response', 'Documents system behavior'],
+                cons: ['Risk of unintended impact', 'Requires mature observability', 'Cultural resistance']
+            },
+            capacityPlanning: {
+                id: 'capacity-planning',
+                name: 'Capacity Planning',
+                icon: '📊',
+                category: 'Planning',
+                rank: 'B',
+                complexity: 70,
+                timeToExecute: '2-8 hours',
+                automationLevel: 50,
+                description: 'Forecast future resource needs based on growth patterns and usage trends. Prevent outages by scaling before you need to.',
+                phases: ['Collect Metrics', 'Analyze Trends', 'Model Growth', 'Plan Resources', 'Implement', 'Review'],
+                comboChains: [
+                    { tools: ['Prometheus', 'Grafana', 'Excel'], effect: 'Historical Analysis' },
+                    { tools: ['Load Testing', 'Benchmarks'], effect: 'Performance Baseline' },
+                    { tools: ['Terraform', 'Auto-scaling'], effect: 'Automated Capacity' }
+                ],
+                pros: ['Prevents capacity-related outages', 'Optimizes cloud spend', 'Supports business planning', 'Reduces firefighting'],
+                cons: ['Predictions can be wrong', 'Requires good historical data', 'Time-consuming analysis']
+            },
+            secretRotation: {
+                id: 'secret-rotation',
+                name: 'Secret Rotation',
+                icon: '🔐',
+                category: 'Security',
+                rank: 'A',
+                complexity: 80,
+                timeToExecute: '15-60 min',
+                automationLevel: 85,
+                description: 'Automated credential rotation without service disruption. Keep secrets fresh and limit blast radius of any potential compromise.',
+                phases: ['Generate New', 'Deploy Secret', 'Update Services', 'Verify', 'Revoke Old', 'Audit'],
+                comboChains: [
+                    { tools: ['Vault', 'External Secrets', 'K8s'], effect: 'Automated K8s Secret Sync' },
+                    { tools: ['AWS Secrets Manager', 'Lambda'], effect: 'Cloud-Native Rotation' },
+                    { tools: ['Database', 'Connection Pool'], effect: 'Zero-Downtime DB Rotation' }
+                ],
+                pros: ['Limits credential exposure window', 'Automated and reliable', 'Audit trail for compliance', 'Reduces manual toil'],
+                cons: ['Complex initial setup', 'Application must support rotation', 'Testing rotation is tricky']
+            },
+            disasterRecovery: {
+                id: 'disaster-recovery',
+                name: 'Disaster Recovery',
+                icon: '🆘',
+                category: 'Emergency',
+                rank: 'S',
+                complexity: 95,
+                timeToExecute: '1-4 hours',
+                automationLevel: 40,
+                description: 'The ultimate spell for recovering from catastrophic failures. Restore services in a different region when primary infrastructure is lost.',
+                phases: ['Detect Disaster', 'Activate DR', 'Failover DNS', 'Restore Data', 'Verify Services', 'Communicate'],
+                comboChains: [
+                    { tools: ['Multi-Region', 'Route53', 'Failover'], effect: 'Automated DNS Failover' },
+                    { tools: ['Database Replication', 'Backup Restore'], effect: 'Data Recovery' },
+                    { tools: ['IaC', 'GitOps', 'Automation'], effect: 'Infrastructure Recreation' }
+                ],
+                pros: ['Business continuity assurance', 'Meets compliance requirements', 'Customer trust', 'Competitive advantage'],
+                cons: ['Expensive to maintain', 'Complex to test', 'Data sync challenges', 'Requires regular drills']
+            }
+        };
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.ops-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            document.querySelectorAll('.ops-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById(`${tabName}-content`).classList.remove('hidden');
+        }
+
+        // Render Codex Grid
+        function renderCodexGrid() {
+            const grid = document.getElementById('codex-grid');
+            grid.innerHTML = Object.values(OPERATIONS_CODEX).map(entry => `
+                <div class="codex-card" onclick="showCodexModal('${entry.id}')">
+                    <div class="codex-card-header">
+                        <span class="codex-number">#${entry.dexNumber}</span>
+                        <span class="codex-rarity">${entry.rarity}</span>
+                    </div>
+                    <div class="codex-card-icon">${entry.icon}</div>
+                    <div class="codex-card-name">${entry.name}</div>
+                    <div class="codex-card-class">${entry.class}</div>
+                    <div class="codex-card-types">
+                        ${entry.type.map(t => `<span class="type-badge">${t}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Bestiary Grid
+        function renderBestiaryGrid() {
+            const grid = document.getElementById('bestiary-grid');
+            grid.innerHTML = INCIDENT_BESTIARY.map(monster => `
+                <div class="bestiary-card threat-${monster.threat.toLowerCase()}" onclick="showBestiaryModal('${monster.id}')">
+                    <div class="bestiary-card-header">
+                        <span class="bestiary-number">#${monster.number}</span>
+                        <span class="threat-badge threat-${monster.threat.toLowerCase()}">${monster.threat}</span>
+                    </div>
+                    <div class="bestiary-card-icon">${monster.icon}</div>
+                    <div class="bestiary-card-name">${monster.name}</div>
+                    <div class="bestiary-card-type">${monster.type}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render Spellbook Grid
+        function renderSpellbookGrid() {
+            const grid = document.getElementById('spellbook-grid');
+            grid.innerHTML = Object.values(RUNBOOK_SPELLBOOK).map(spell => `
+                <div class="spell-card rank-${spell.rank.toLowerCase()}" onclick="showSpellModal('${spell.id}')">
+                    <div class="spell-card-header">
+                        <span class="spell-rank rank-${spell.rank.toLowerCase()}">Rank ${spell.rank}</span>
+                        <span class="spell-category">${spell.category}</span>
+                    </div>
+                    <div class="spell-card-icon">${spell.icon}</div>
+                    <div class="spell-card-name">${spell.name}</div>
+                    <div class="spell-stats-mini">
+                        <div class="mini-stat">
+                            <span class="mini-label">Complexity</span>
+                            <span class="mini-value">${spell.complexity}</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-label">Automation</span>
+                            <span class="mini-value">${spell.automationLevel}%</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show Codex Modal
+        function showCodexModal(id) {
+            const entry = OPERATIONS_CODEX[id];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <div class="modal-icon">${entry.icon}</div>
+                        <div>
+                            <div class="modal-number">#${entry.dexNumber}</div>
+                            <h2 class="modal-title">${entry.name}</h2>
+                            <div class="modal-class">${entry.class}</div>
+                        </div>
+                    </div>
+                    <div class="modal-types">
+                        ${entry.type.map(t => `<span class="type-badge-large">${t}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-section">
+                        <p class="modal-description">${entry.description}</p>
+                    </div>
+                    <div class="modal-info-grid">
+                        <div class="info-item"><span class="info-label">Height</span><span class="info-value">${entry.height}</span></div>
+                        <div class="info-item"><span class="info-label">Weight</span><span class="info-value">${entry.weight}</span></div>
+                        <div class="info-item"><span class="info-label">Rarity</span><span class="info-value">${entry.rarity}</span></div>
+                        <div class="info-item"><span class="info-label">Habitat</span><span class="info-value">${entry.habitat}</span></div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">⚡ Base Stats</h3>
+                        <div class="stats-container">
+                            ${renderStatBar(entry.stats.hp, 255, 'HP (Stability)')}
+                            ${renderStatBar(entry.stats.mp, 255, 'MP (Efficiency)')}
+                            ${renderStatBar(entry.stats.attack, 255, 'ATK (Performance)')}
+                            ${renderStatBar(entry.stats.defense, 255, 'DEF (Security)')}
+                            ${renderStatBar(entry.stats.speed, 255, 'SPD (Velocity)')}
+                            ${renderStatBar(entry.stats.special, 255, 'SPC (Ecosystem)')}
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">🌟 Abilities</h3>
+                        <div class="abilities-list">
+                            ${entry.abilities.map(a => `
+                                <div class="ability-item">
+                                    <div class="ability-name">${a.name}</div>
+                                    <div class="ability-effect">${a.effect}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="modal-section-split">
+                        <div class="modal-section">
+                            <h3 class="section-title">✅ Strengths</h3>
+                            <ul class="traits-list">${entry.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+                        </div>
+                        <div class="modal-section">
+                            <h3 class="section-title">⚠️ Weaknesses</h3>
+                            <ul class="traits-list">${entry.weaknesses.map(w => `<li>${w}</li>`).join('')}</ul>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">🔗 Integrations</h3>
+                        <div class="frameworks-list">
+                            ${entry.popularFrameworks.map(f => `<span class="framework-badge">${f}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        // Show Bestiary Modal
+        function showBestiaryModal(id) {
+            const monster = INCIDENT_BESTIARY.find(m => m.id === id);
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <div class="modal-icon">${monster.icon}</div>
+                        <div>
+                            <div class="modal-number">#${monster.number}</div>
+                            <h2 class="modal-title">${monster.name}</h2>
+                            <div class="modal-class">${monster.type}</div>
+                        </div>
+                    </div>
+                    <span class="threat-badge threat-${monster.threat.toLowerCase()}" style="font-size: 1rem; padding: 0.5rem 1rem;">${monster.threat} THREAT</span>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-section">
+                        <p class="modal-description">${monster.description}</p>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">📍 Habitat</h3>
+                        <p class="modal-description">${monster.habitat}</p>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">⚔️ Combat Stats</h3>
+                        <div class="stats-container">
+                            ${renderStatBar(monster.stats.hp, 350, 'HP')}
+                            ${renderStatBar(monster.stats.attack, 255, 'ATK')}
+                            ${renderStatBar(monster.stats.defense, 255, 'DEF')}
+                            ${renderStatBar(monster.stats.speed, 255, 'SPD')}
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">💥 Attacks</h3>
+                        <div class="attacks-list">
+                            ${monster.attacks.map(a => `
+                                <div class="attack-item">
+                                    <div class="attack-header">
+                                        <span class="attack-name">${a.name}</span>
+                                        <span class="attack-damage">DMG: ${a.damage}</span>
+                                    </div>
+                                    <div class="attack-effect">${a.effect}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">🛡️ How to Defeat</h3>
+                        <ul class="traits-list">${monster.weakness.map(w => `<li>${w}</li>`).join('')}</ul>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">🎁 Drops</h3>
+                        <div class="drops-list">
+                            ${monster.drops.map(d => `<span class="drop-badge">${d}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        // Show Spell Modal
+        function showSpellModal(id) {
+            const spell = RUNBOOK_SPELLBOOK[id];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <div class="modal-icon">${spell.icon}</div>
+                        <div>
+                            <h2 class="modal-title">${spell.name}</h2>
+                            <div class="modal-class">Category: ${spell.category}</div>
+                        </div>
+                    </div>
+                    <span class="spell-rank rank-${spell.rank.toLowerCase()}" style="font-size: 1rem; padding: 0.5rem 1rem;">RANK ${spell.rank}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-section">
+                        <p class="modal-description">${spell.description}</p>
+                    </div>
+                    <div class="spell-stats-grid">
+                        <div class="spell-stat-card"><div class="spell-stat-label">Complexity</div><div class="spell-stat-value">${spell.complexity}</div></div>
+                        <div class="spell-stat-card"><div class="spell-stat-label">Time to Execute</div><div class="spell-stat-value">${spell.timeToExecute}</div></div>
+                        <div class="spell-stat-card"><div class="spell-stat-label">Automation</div><div class="spell-stat-value">${spell.automationLevel}%</div></div>
+                        <div class="spell-stat-card"><div class="spell-stat-label">Rank</div><div class="spell-stat-value">${spell.rank}</div></div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">🔄 Phases</h3>
+                        <div class="phases-list">
+                            ${spell.phases.map(p => `<span class="phase-badge">${p}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="section-title">⚡ Combo Chains</h3>
+                        <div class="combos-list">
+                            ${spell.comboChains.map(c => `
+                                <div class="combo-item">
+                                    <div class="combo-tools">${c.tools.join(' + ')}</div>
+                                    <div class="combo-effect">→ ${c.effect}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="modal-section-split">
+                        <div class="modal-section">
+                            <h3 class="section-title">✅ Pros</h3>
+                            <ul class="traits-list">${spell.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+                        </div>
+                        <div class="modal-section">
+                            <h3 class="section-title">⚠️ Cons</h3>
+                            <ul class="traits-list">${spell.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        // Render stat bar helper
+        function renderStatBar(value, max, label) {
+            const pct = (value / max) * 100;
+            return `
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <span>${label}</span>
+                        <span class="stat-value">${value}</span>
+                    </div>
+                    <div class="stat-bar-bg">
+                        <div class="stat-bar-fill" style="width: ${pct}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialize
+        renderCodexGrid();
+        renderBestiaryGrid();
+        renderSpellbookGrid();
+    </script>
+</body>
+</html>

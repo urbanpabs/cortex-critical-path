@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Operations Dashboard | Platform as a Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+    <style>
+        :root {
+            --fiserv-blue: #237cb8;
+            --fiserv-blue-light: #2e8bc9;
+            --fiserv-orange: #ff6600;
+            --fiserv-orange-light: #fb6400;
+            --fiserv-black: #0e0e0e;
+            --bg-primary: #0e0e0e;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #252525;
+            --bg-card-hover: #2f2f2f;
+            --text-primary: #f4f4f4;
+            --text-secondary: #bbbbbb;
+            --text-muted: #909090;
+            --coder-color: #10b981;
+            --cortex-color: #237cb8;
+            --kratix-color: #8b5cf6;
+            --status-operational: #10b981;
+            --status-degraded: #f59e0b;
+            --status-down: #ef4444;
+            --border-subtle: rgba(187, 187, 187, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(35, 124, 184, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 102, 0, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(102, 102, 102, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 102, 102, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--fiserv-blue);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .logo-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--coder-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 .highlight {
+            background: linear-gradient(90deg, var(--cortex-color), var(--fiserv-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .last-updated {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--fiserv-orange);
+        }
+
+        /* Platform Stack Grid */
+        .platform-stack-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .platform-stack-grid .platform-card {
+            flex: 0 1 160px;
+            min-width: 140px;
+        }
+
+        .platform-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--status-operational);
+        }
+
+        .platform-card.degraded::before {
+            background: var(--status-degraded);
+        }
+
+        .platform-card.down::before {
+            background: var(--status-down);
+        }
+
+        .platform-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .platform-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .platform-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-uptime {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--coder-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-card.degraded .platform-uptime {
+            color: var(--status-degraded);
+        }
+
+        .platform-status {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--status-operational);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .platform-status.degraded {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--status-degraded);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value-large {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .metric-sublabel {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .metric-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.75rem;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .metric-fill.success {
+            background: linear-gradient(90deg, var(--fiserv-blue), var(--coder-color));
+        }
+
+        /* SEQ Cards */
+        .seq-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .seq-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .seq-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .seq-card.stability {
+            border-color: var(--fiserv-blue);
+            background: linear-gradient(135deg, rgba(35, 124, 184, 0.1), var(--bg-card));
+        }
+
+        .seq-card.efficiency {
+            border-color: var(--fiserv-orange);
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.1), var(--bg-card));
+        }
+
+        .seq-card.quality {
+            border-color: var(--coder-color);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), var(--bg-card));
+        }
+
+        .seq-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .seq-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .seq-score {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .seq-card.stability .seq-score { color: var(--fiserv-blue); }
+        .seq-card.efficiency .seq-score { color: var(--fiserv-orange); }
+        .seq-card.quality .seq-score { color: var(--coder-color); }
+
+        /* Over threshold warning state */
+        .seq-card.over-threshold {
+            border-color: var(--status-degraded);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), var(--bg-card));
+        }
+
+        .seq-detail-item.over-threshold {
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem !important;
+            margin: 0 -0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .detail-value.warning {
+            color: var(--status-degraded) !important;
+            font-weight: 700;
+        }
+
+        .detail-variance {
+            width: 100%;
+            font-size: 0.75rem;
+            color: var(--status-degraded);
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .seq-details {
+            text-align: left;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .seq-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .seq-detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .detail-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Throughput Grid */
+        .throughput-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .throughput-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .throughput-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(35, 124, 184, 0.2);
+            border-color: var(--fiserv-blue);
+        }
+
+        .throughput-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .throughput-icon {
+            font-size: 2rem;
+        }
+
+        .throughput-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .throughput-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .throughput-stat .stat-number {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--fiserv-orange);
+        }
+
+        .throughput-stat .stat-text {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Tickets Grid */
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 800px) {
+            .tickets-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tickets-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .tickets-card.incidents {
+            border-color: var(--status-degraded);
+        }
+
+        .ticket-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .ticket-icon {
+            font-size: 1.5rem;
+        }
+
+        .ticket-type-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .ticket-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .ticket-stat {
+            text-align: center;
+        }
+
+        .ticket-stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .ticket-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .ticket-breakdown {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+
+        .breakdown-label {
+            color: var(--text-muted);
+        }
+
+        .breakdown-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .breakdown-value.emergency, .breakdown-value.critical { color: var(--status-down); }
+        .breakdown-value.high { color: var(--status-degraded); }
+        .breakdown-value.standard, .breakdown-value.medium { color: var(--fiserv-blue); }
+        .breakdown-value.normal { color: var(--coder-color); }
+
+        /* Environment Grid */
+        .env-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .env-category-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .env-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .env-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .env-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .env-stats {
+            margin-bottom: 0.75rem;
+        }
+
+        .env-stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            padding: 0.25rem 0;
+        }
+
+        .env-stat-label {
+            color: var(--text-muted);
+        }
+
+        .env-stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .env-status {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--status-operational);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Cost Grid */
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .cost-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .cost-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .cost-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .cost-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--fiserv-orange);
+        }
+
+        .cost-sublabel {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .cost-bar {
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .cost-fill {
+            height: 100%;
+            background: var(--fiserv-orange);
+            border-radius: 3px;
+        }
+
+        .cost-breakdown {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .cost-breakdown h4 {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .breakdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .breakdown-info {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .breakdown-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .breakdown-cost {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--fiserv-orange);
+        }
+
+        .breakdown-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .breakdown-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--fiserv-blue), var(--fiserv-orange));
+            border-radius: 4px;
+        }
+
+        /* Revenue Grid */
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 900px) {
+            .revenue-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .revenue-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .revenue-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .revenue-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .revenue-card.revenue-total:hover {
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.4);
+        }
+
+        .revenue-card.revenue-deploy:hover {
+            box-shadow: 0 12px 40px rgba(35, 124, 184, 0.4);
+        }
+
+        .revenue-card.revenue-developer:hover {
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .revenue-card.revenue-velocity:hover {
+            box-shadow: 0 12px 40px rgba(255, 102, 0, 0.4);
+        }
+
+        /* Green - Total Revenue */
+        .revenue-card.revenue-total {
+            border-color: var(--coder-color);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), var(--bg-card));
+        }
+        .revenue-card.revenue-total::before {
+            background: linear-gradient(90deg, var(--coder-color), #34d399);
+        }
+        .revenue-card.revenue-total .revenue-value-large {
+            color: var(--coder-color);
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Blue - Per Deploy */
+        .revenue-card.revenue-deploy {
+            border-color: var(--fiserv-blue);
+            background: linear-gradient(135deg, rgba(35, 124, 184, 0.15), var(--bg-card));
+        }
+        .revenue-card.revenue-deploy::before {
+            background: linear-gradient(90deg, var(--fiserv-blue), #60a5fa);
+        }
+        .revenue-card.revenue-deploy .revenue-value {
+            color: var(--fiserv-blue-light);
+            text-shadow: 0 0 30px rgba(35, 124, 184, 0.5);
+        }
+
+        /* Purple - Per Developer */
+        .revenue-card.revenue-developer {
+            border-color: var(--kratix-color);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), var(--bg-card));
+        }
+        .revenue-card.revenue-developer::before {
+            background: linear-gradient(90deg, var(--kratix-color), #a78bfa);
+        }
+        .revenue-card.revenue-developer .revenue-value {
+            color: #a78bfa;
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Orange - Velocity */
+        .revenue-card.revenue-velocity {
+            border-color: var(--fiserv-orange);
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.15), var(--bg-card));
+        }
+        .revenue-card.revenue-velocity::before {
+            background: linear-gradient(90deg, var(--fiserv-orange), #fb923c);
+        }
+        .revenue-card.revenue-velocity .revenue-value {
+            color: var(--fiserv-orange);
+            text-shadow: 0 0 30px rgba(255, 102, 0, 0.5);
+        }
+
+        .revenue-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .revenue-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .revenue-value-large {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.75rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .revenue-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-primary);
+        }
+
+        .revenue-sublabel {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Zero-Onboarding Section */
+        .zero-onboarding-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 1000px) {
+            .zero-onboarding-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .zero-onboarding-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .onboarding-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .onboarding-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .onboarding-card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Zero Onboarding - Cyan */
+        .onboarding-card.zero-target {
+            border-color: #06b6d4;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), var(--bg-card));
+        }
+        .onboarding-card.zero-target::before {
+            background: linear-gradient(90deg, #06b6d4, #22d3ee);
+        }
+        .onboarding-card.zero-target:hover {
+            box-shadow: 0 12px 40px rgba(6, 182, 212, 0.4);
+        }
+        .onboarding-card.zero-target .onboarding-value {
+            color: #22d3ee;
+            text-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+        }
+
+        /* First PR - Green */
+        .onboarding-card.first-pr {
+            border-color: var(--coder-color);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), var(--bg-card));
+        }
+        .onboarding-card.first-pr::before {
+            background: linear-gradient(90deg, var(--coder-color), #34d399);
+        }
+        .onboarding-card.first-pr:hover {
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.4);
+        }
+        .onboarding-card.first-pr .onboarding-value {
+            color: #34d399;
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        /* 10 PR - Purple */
+        .onboarding-card.ten-pr {
+            border-color: var(--kratix-color);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), var(--bg-card));
+        }
+        .onboarding-card.ten-pr::before {
+            background: linear-gradient(90deg, var(--kratix-color), #a78bfa);
+        }
+        .onboarding-card.ten-pr:hover {
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+        }
+        .onboarding-card.ten-pr .onboarding-value {
+            color: #a78bfa;
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        /* MTTR - Orange */
+        .onboarding-card.mttr-target {
+            border-color: var(--fiserv-orange);
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.15), var(--bg-card));
+        }
+        .onboarding-card.mttr-target::before {
+            background: linear-gradient(90deg, var(--fiserv-orange), #fb923c);
+        }
+        .onboarding-card.mttr-target:hover {
+            box-shadow: 0 12px 40px rgba(255, 102, 0, 0.4);
+        }
+        .onboarding-card.mttr-target .onboarding-value {
+            color: var(--fiserv-orange);
+            text-shadow: 0 0 30px rgba(255, 102, 0, 0.5);
+        }
+
+        .onboarding-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .onboarding-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .onboarding-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .onboarding-target {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .onboarding-target span {
+            color: var(--coder-color);
+            font-weight: 600;
+        }
+
+        .onboarding-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .onboarding-status.on-target {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--coder-color);
+        }
+
+        .onboarding-status.near-target {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--status-degraded);
+        }
+
+        .onboarding-belief {
+            margin-top: 1.5rem;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .belief-quote {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .belief-quote span {
+            color: #22d3ee;
+            font-weight: 600;
+        }
+
+        .belief-attribution {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Sankey Diagram */
+        .sankey-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .sankey-legend {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        #sankey-diagram {
+            width: 100%;
+            height: 450px;
+            margin-bottom: 1.5rem;
+        }
+
+        #sankey-diagram svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .sankey-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        @media (max-width: 768px) {
+            .sankey-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sankey-stat-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .sankey-stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sankey-stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .sankey-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .sankey-stat-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--fiserv-orange);
+            margin-top: 0.25rem;
+        }
+
+        /* Sankey node and link styles */
+        .sankey-node rect {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .sankey-node rect:hover {
+            opacity: 0.8;
+        }
+
+        .sankey-node text {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            fill: var(--text-primary);
+            pointer-events: none;
+        }
+
+        .sankey-link {
+            fill: none;
+            stroke-opacity: 0.4;
+            transition: stroke-opacity 0.2s;
+        }
+
+        .sankey-link:hover {
+            stroke-opacity: 0.7;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">
+                <span>&larr;</span>
+                <span>Back to Critical Path</span>
+            </a>
+            <div class="nav-links">
+                <a href="platform-operations.html" class="nav-link">Operations Codex</a>
+                <a href="architecture.html" class="nav-link">Architecture</a>
+            </div>
+        </nav>
+
+        <header>
+            <div class="logo-badge">LIVE DASHBOARD</div>
+            <h1>Platform <span class="highlight">Operations</span> Dashboard</h1>
+            <p class="subtitle">Real-time monitoring and analytics for the DevOps platform</p>
+            <p class="last-updated">Last updated: <span id="timestamp"></span></p>
+        </header>
+
+        <!-- DevOps Platform Stack Health -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">🛠️</span>
+                <h2 class="section-title">DevOps Platform Stack</h2>
+            </div>
+            <div class="platform-stack-grid">
+                <!-- Row 1: Dev Environments & Source Control -->
+                <div class="platform-card">
+                    <div class="platform-icon">💻</div>
+                    <div class="platform-name">Cloud Dev Env</div>
+                    <div class="platform-uptime">97.5%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">🐙</div>
+                    <div class="platform-name">GitHub</div>
+                    <div class="platform-uptime">99.9%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">🦊</div>
+                    <div class="platform-name">GitLab</div>
+                    <div class="platform-uptime">99.7%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <!-- Security Tools -->
+                <div class="platform-card">
+                    <div class="platform-icon">🔒</div>
+                    <div class="platform-name">Fortify</div>
+                    <div class="platform-uptime">99.2%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card degraded">
+                    <div class="platform-icon">🛡️</div>
+                    <div class="platform-name">Sonatype</div>
+                    <div class="platform-uptime">96.1%</div>
+                    <div class="platform-status degraded">Degraded</div>
+                </div>
+                <!-- Artifact Management -->
+                <div class="platform-card">
+                    <div class="platform-icon">📦</div>
+                    <div class="platform-name">Nexus</div>
+                    <div class="platform-uptime">99.5%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">🔥</div>
+                    <div class="platform-name">Nexus Firewall</div>
+                    <div class="platform-uptime">99.8%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <!-- Row 2: CI/CD & Infrastructure -->
+                <div class="platform-card">
+                    <div class="platform-icon">🚀</div>
+                    <div class="platform-name">Harness</div>
+                    <div class="platform-uptime">98.7%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">☁️</div>
+                    <div class="platform-name">Wiz</div>
+                    <div class="platform-uptime">99.6%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">🌐</div>
+                    <div class="platform-name">Apigee</div>
+                    <div class="platform-uptime">99.4%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">📨</div>
+                    <div class="platform-name">Kafka</div>
+                    <div class="platform-uptime">99.8%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">⎈</div>
+                    <div class="platform-name">AKS</div>
+                    <div class="platform-uptime">99.5%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">🔶</div>
+                    <div class="platform-name">EKS</div>
+                    <div class="platform-uptime">99.6%</div>
+                    <div class="platform-status">Operational</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline Metrics -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">⚙️</span>
+                <h2 class="section-title">Pipeline Metrics</h2>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Pipeline Availability</div>
+                    <div class="metric-value-large">98.5%</div>
+                    <div class="metric-bar"><div class="metric-fill success" style="width: 98.5%"></div></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Build Success Rate</div>
+                    <div class="metric-value-large">92.3%</div>
+                    <div class="metric-bar"><div class="metric-fill success" style="width: 92.3%"></div></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Deployment Frequency</div>
+                    <div class="metric-value-large">247</div>
+                    <div class="metric-sublabel">deploys this week</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Cloud Dev Env Health</div>
+                    <div class="metric-value-large">95.2%</div>
+                    <div class="metric-bar"><div class="metric-fill success" style="width: 95.2%"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stability, Efficiency & Quality -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h2 class="section-title">Stability, Efficiency & Quality</h2>
+            </div>
+            <div class="seq-grid">
+                <div class="seq-card stability over-threshold">
+                    <div class="seq-icon">🛡️</div>
+                    <div class="seq-label">Stability</div>
+                    <div class="seq-score">94.2%</div>
+                    <div class="seq-details">
+                        <div class="seq-detail-item">
+                            <span class="detail-label">Uptime:</span>
+                            <span class="detail-value">99.1%</span>
+                        </div>
+                        <div class="seq-detail-item">
+                            <span class="detail-label">MTBF:</span>
+                            <span class="detail-value">168h</span>
+                        </div>
+                        <div class="seq-detail-item over-threshold">
+                            <span class="detail-label">MTTR:</span>
+                            <span class="detail-value warning">23m</span>
+                            <span class="detail-variance">+13m over target</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="seq-card efficiency">
+                    <div class="seq-icon">⚡</div>
+                    <div class="seq-label">Efficiency</div>
+                    <div class="seq-score">89.7%</div>
+                    <div class="seq-details">
+                        <div class="seq-detail-item">
+                            <span class="detail-label">Lead Time:</span>
+                            <span class="detail-value">4.2h</span>
+                        </div>
+                        <div class="seq-detail-item">
+                            <span class="detail-label">Cycle Time:</span>
+                            <span class="detail-value">2.8h</span>
+                        </div>
+                        <div class="seq-detail-item">
+                            <span class="detail-label">Throughput:</span>
+                            <span class="detail-value">247/wk</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="seq-card quality">
+                    <div class="seq-icon">✨</div>
+                    <div class="seq-label">Quality</div>
+                    <div class="seq-score">92.3%</div>
+                    <div class="seq-details">
+                        <div class="seq-detail-item">
+                            <span class="detail-label">Success Rate:</span>
+                            <span class="detail-value">92.3%</span>
+                        </div>
+                        <div class="seq-detail-item">
+                            <span class="detail-label">Test Coverage:</span>
+                            <span class="detail-value">87%</span>
+                        </div>
+                        <div class="seq-detail-item">
+                            <span class="detail-label">Code Quality:</span>
+                            <span class="detail-value">A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Zero-Onboarding Philosophy -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">🚀</span>
+                <h2 class="section-title">Zero-Onboarding Developer Experience</h2>
+            </div>
+            <div class="zero-onboarding-grid">
+                <div class="onboarding-card zero-target">
+                    <div class="onboarding-icon">🎯</div>
+                    <div class="onboarding-label">Onboarding Philosophy</div>
+                    <div class="onboarding-value">0</div>
+                    <div class="onboarding-target">Target: <span>Zero friction</span></div>
+                    <div class="onboarding-status on-target">✓ Self-Service</div>
+                </div>
+                <div class="onboarding-card first-pr">
+                    <div class="onboarding-icon">🏁</div>
+                    <div class="onboarding-label">Time to First PR</div>
+                    <div class="onboarding-value">&lt;4h</div>
+                    <div class="onboarding-target">Target: <span>Same day</span></div>
+                    <div class="onboarding-status on-target">✓ On Target</div>
+                </div>
+                <div class="onboarding-card ten-pr">
+                    <div class="onboarding-icon">📊</div>
+                    <div class="onboarding-label">Time to 10 PRs</div>
+                    <div class="onboarding-value">2wk</div>
+                    <div class="onboarding-target">Target: <span>2 weeks</span></div>
+                    <div class="onboarding-status on-target">✓ Proficient</div>
+                </div>
+                <div class="onboarding-card mttr-target">
+                    <div class="onboarding-icon">⚡</div>
+                    <div class="onboarding-label">Environment MTTR</div>
+                    <div class="onboarding-value">&lt;10m</div>
+                    <div class="onboarding-target">Target: <span>&lt;10 minutes</span></div>
+                    <div class="onboarding-status on-target">✓ On Target</div>
+                </div>
+            </div>
+            <div class="onboarding-belief">
+                <div class="belief-quote">"The best onboarding is <span>no onboarding</span> — developers should be productive from day one."</div>
+                <div class="belief-attribution">Platform Engineering Philosophy</div>
+            </div>
+        </section>
+
+        <!-- Throughput by Tech Stack -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">📈</span>
+                <h2 class="section-title">Throughput by Tech Stack</h2>
+            </div>
+            <div class="throughput-grid">
+                <div class="throughput-card">
+                    <div class="throughput-header">
+                        <span class="throughput-icon">☕</span>
+                        <span class="throughput-name">Java</span>
+                    </div>
+                    <div class="throughput-stats">
+                        <div class="throughput-stat"><span class="stat-number">1,240</span><span class="stat-text">Builds</span></div>
+                        <div class="throughput-stat"><span class="stat-number">856</span><span class="stat-text">Deploys</span></div>
+                        <div class="throughput-stat"><span class="stat-number">89%</span><span class="stat-text">Efficiency</span></div>
+                    </div>
+                </div>
+                <div class="throughput-card">
+                    <div class="throughput-header">
+                        <span class="throughput-icon">🔷</span>
+                        <span class="throughput-name">.NET</span>
+                    </div>
+                    <div class="throughput-stats">
+                        <div class="throughput-stat"><span class="stat-number">982</span><span class="stat-text">Builds</span></div>
+                        <div class="throughput-stat"><span class="stat-number">734</span><span class="stat-text">Deploys</span></div>
+                        <div class="throughput-stat"><span class="stat-number">92%</span><span class="stat-text">Efficiency</span></div>
+                    </div>
+                </div>
+                <div class="throughput-card">
+                    <div class="throughput-header">
+                        <span class="throughput-icon">🐍</span>
+                        <span class="throughput-name">Python</span>
+                    </div>
+                    <div class="throughput-stats">
+                        <div class="throughput-stat"><span class="stat-number">1,450</span><span class="stat-text">Builds</span></div>
+                        <div class="throughput-stat"><span class="stat-number">1,021</span><span class="stat-text">Deploys</span></div>
+                        <div class="throughput-stat"><span class="stat-number">87%</span><span class="stat-text">Efficiency</span></div>
+                    </div>
+                </div>
+                <div class="throughput-card">
+                    <div class="throughput-header">
+                        <span class="throughput-icon">⚡</span>
+                        <span class="throughput-name">JavaScript</span>
+                    </div>
+                    <div class="throughput-stats">
+                        <div class="throughput-stat"><span class="stat-number">2,105</span><span class="stat-text">Builds</span></div>
+                        <div class="throughput-stat"><span class="stat-number">1,654</span><span class="stat-text">Deploys</span></div>
+                        <div class="throughput-stat"><span class="stat-number">94%</span><span class="stat-text">Efficiency</span></div>
+                    </div>
+                </div>
+                <div class="throughput-card">
+                    <div class="throughput-header">
+                        <span class="throughput-icon">🏃</span>
+                        <span class="throughput-name">Go</span>
+                    </div>
+                    <div class="throughput-stats">
+                        <div class="throughput-stat"><span class="stat-number">743</span><span class="stat-text">Builds</span></div>
+                        <div class="throughput-stat"><span class="stat-number">612</span><span class="stat-text">Deploys</span></div>
+                        <div class="throughput-stat"><span class="stat-number">91%</span><span class="stat-text">Efficiency</span></div>
+                    </div>
+                </div>
+                <div class="throughput-card">
+                    <div class="throughput-header">
+                        <span class="throughput-icon">⚙️</span>
+                        <span class="throughput-name">Rust</span>
+                    </div>
+                    <div class="throughput-stats">
+                        <div class="throughput-stat"><span class="stat-number">456</span><span class="stat-text">Builds</span></div>
+                        <div class="throughput-stat"><span class="stat-number">389</span><span class="stat-text">Deploys</span></div>
+                        <div class="throughput-stat"><span class="stat-number">88%</span><span class="stat-text">Efficiency</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deployment Flow - Sankey Diagram -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">🔄</span>
+                <h2 class="section-title">Deployment Flow: Languages > Strategies > Destinations</h2>
+            </div>
+            <div class="sankey-container">
+                <div class="sankey-legend">
+                    <div class="legend-item"><div class="legend-color" style="background: #ff6600"></div><span>Languages</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #8b5cf6"></div><span>Strategies</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #10b981"></div><span>Destinations</span></div>
+                </div>
+                <div id="sankey-diagram"></div>
+                <div class="sankey-stats">
+                    <div class="sankey-stat-card">
+                        <div class="sankey-stat-icon">🌐</div>
+                        <div class="sankey-stat-label">Top Destination</div>
+                        <div class="sankey-stat-value">Public Cloud</div>
+                        <div class="sankey-stat-count">2,299 deploys/mo</div>
+                    </div>
+                    <div class="sankey-stat-card">
+                        <div class="sankey-stat-icon">🔄</div>
+                        <div class="sankey-stat-label">Top Strategy</div>
+                        <div class="sankey-stat-value">Rolling Deploy</div>
+                        <div class="sankey-stat-count">2,106 deploys/mo</div>
+                    </div>
+                    <div class="sankey-stat-card">
+                        <div class="sankey-stat-icon">⚡</div>
+                        <div class="sankey-stat-label">Top Language</div>
+                        <div class="sankey-stat-value">JavaScript</div>
+                        <div class="sankey-stat-count">1,654 deploys/mo</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Change Tickets & Incidents -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">🎫</span>
+                <h2 class="section-title">Change Tickets & Incidents</h2>
+            </div>
+            <div class="tickets-grid">
+                <div class="tickets-card">
+                    <div class="ticket-header">
+                        <span class="ticket-icon">📝</span>
+                        <span class="ticket-type-name">Change Tickets</span>
+                    </div>
+                    <div class="ticket-stats">
+                        <div class="ticket-stat"><div class="ticket-stat-value">127</div><div class="ticket-stat-label">Total</div></div>
+                        <div class="ticket-stat"><div class="ticket-stat-value">94</div><div class="ticket-stat-label">Completed</div></div>
+                        <div class="ticket-stat"><div class="ticket-stat-value">23</div><div class="ticket-stat-label">In Progress</div></div>
+                        <div class="ticket-stat"><div class="ticket-stat-value">10</div><div class="ticket-stat-label">Pending</div></div>
+                    </div>
+                    <div class="ticket-breakdown">
+                        <div class="breakdown-row"><span class="breakdown-label">Emergency:</span><span class="breakdown-value emergency">12</span></div>
+                        <div class="breakdown-row"><span class="breakdown-label">Standard:</span><span class="breakdown-value standard">89</span></div>
+                        <div class="breakdown-row"><span class="breakdown-label">Normal:</span><span class="breakdown-value normal">26</span></div>
+                    </div>
+                </div>
+                <div class="tickets-card incidents">
+                    <div class="ticket-header">
+                        <span class="ticket-icon">🚨</span>
+                        <span class="ticket-type-name">Incidents</span>
+                    </div>
+                    <div class="ticket-stats">
+                        <div class="ticket-stat"><div class="ticket-stat-value">34</div><div class="ticket-stat-label">Total</div></div>
+                        <div class="ticket-stat"><div class="ticket-stat-value">28</div><div class="ticket-stat-label">Resolved</div></div>
+                        <div class="ticket-stat"><div class="ticket-stat-value">4</div><div class="ticket-stat-label">Active</div></div>
+                        <div class="ticket-stat"><div class="ticket-stat-value">2</div><div class="ticket-stat-label">Critical</div></div>
+                    </div>
+                    <div class="ticket-breakdown">
+                        <div class="breakdown-row"><span class="breakdown-label">P1 (Critical):</span><span class="breakdown-value critical">2</span></div>
+                        <div class="breakdown-row"><span class="breakdown-label">P2 (High):</span><span class="breakdown-value high">8</span></div>
+                        <div class="breakdown-row"><span class="breakdown-label">P3 (Medium):</span><span class="breakdown-value medium">24</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deployment Environments -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">🌍</span>
+                <h2 class="section-title">Deployment Environments</h2>
+            </div>
+            <div class="env-categories">
+                <div>
+                    <h4 class="env-category-title">🏢 On-Premises Data Centers</h4>
+                    <div class="env-grid">
+                        <div class="env-card">
+                            <div class="env-name">DC-East-01</div>
+                            <div class="env-stats">
+                                <div class="env-stat"><span class="env-stat-label">Deployments:</span><span class="env-stat-value">142</span></div>
+                                <div class="env-stat"><span class="env-stat-label">Success Rate:</span><span class="env-stat-value">94%</span></div>
+                            </div>
+                            <div class="env-status">✓ Operational</div>
+                        </div>
+                        <div class="env-card">
+                            <div class="env-name">DC-West-02</div>
+                            <div class="env-stats">
+                                <div class="env-stat"><span class="env-stat-label">Deployments:</span><span class="env-stat-value">128</span></div>
+                                <div class="env-stat"><span class="env-stat-label">Success Rate:</span><span class="env-stat-value">91%</span></div>
+                            </div>
+                            <div class="env-status">✓ Operational</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="env-category-title">🔒 Private Cloud</h4>
+                    <div class="env-grid">
+                        <div class="env-card">
+                            <div class="env-name">VMware Tanzu</div>
+                            <div class="env-stats">
+                                <div class="env-stat"><span class="env-stat-label">Deployments:</span><span class="env-stat-value">89</span></div>
+                                <div class="env-stat"><span class="env-stat-label">Success Rate:</span><span class="env-stat-value">96%</span></div>
+                            </div>
+                            <div class="env-status">✓ Operational</div>
+                        </div>
+                        <div class="env-card">
+                            <div class="env-name">OpenShift</div>
+                            <div class="env-stats">
+                                <div class="env-stat"><span class="env-stat-label">Deployments:</span><span class="env-stat-value">67</span></div>
+                                <div class="env-stat"><span class="env-stat-label">Success Rate:</span><span class="env-stat-value">93%</span></div>
+                            </div>
+                            <div class="env-status">✓ Operational</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="env-category-title">☁️ Public Cloud</h4>
+                    <div class="env-grid">
+                        <div class="env-card">
+                            <div class="env-name">AWS</div>
+                            <div class="env-stats">
+                                <div class="env-stat"><span class="env-stat-label">Deployments:</span><span class="env-stat-value">234</span></div>
+                                <div class="env-stat"><span class="env-stat-label">Success Rate:</span><span class="env-stat-value">97%</span></div>
+                            </div>
+                            <div class="env-status">✓ Operational</div>
+                        </div>
+                        <div class="env-card">
+                            <div class="env-name">Azure</div>
+                            <div class="env-stats">
+                                <div class="env-stat"><span class="env-stat-label">Deployments:</span><span class="env-stat-value">198</span></div>
+                                <div class="env-stat"><span class="env-stat-label">Success Rate:</span><span class="env-stat-value">95%</span></div>
+                            </div>
+                            <div class="env-status">✓ Operational</div>
+                        </div>
+                        <div class="env-card">
+                            <div class="env-name">GCP</div>
+                            <div class="env-stats">
+                                <div class="env-stat"><span class="env-stat-label">Deployments:</span><span class="env-stat-value">156</span></div>
+                                <div class="env-stat"><span class="env-stat-label">Success Rate:</span><span class="env-stat-value">94%</span></div>
+                            </div>
+                            <div class="env-status">✓ Operational</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Licensing & Cost Analytics -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">💰</span>
+                <h2 class="section-title">Licensing & Cost Analytics</h2>
+            </div>
+            <div class="cost-grid">
+                <div class="cost-card">
+                    <div class="cost-label">Total Licenses</div>
+                    <div class="cost-value">1,247</div>
+                    <div class="cost-sublabel">active seats</div>
+                </div>
+                <div class="cost-card">
+                    <div class="cost-label">License Utilization</div>
+                    <div class="cost-value">87%</div>
+                    <div class="cost-bar"><div class="cost-fill" style="width: 87%"></div></div>
+                </div>
+                <div class="cost-card">
+                    <div class="cost-label">Monthly OPEX</div>
+                    <div class="cost-value">$142K</div>
+                    <div class="cost-sublabel">platform costs</div>
+                </div>
+                <div class="cost-card">
+                    <div class="cost-label">Cost per Deploy</div>
+                    <div class="cost-value">$23.40</div>
+                    <div class="cost-sublabel">average</div>
+                </div>
+            </div>
+            <div class="cost-breakdown">
+                <h4>Cost Breakdown by Platform</h4>
+                <div class="breakdown-list">
+                    <div class="breakdown-item">
+                        <div class="breakdown-info"><span class="breakdown-name">GitHub Enterprise</span><span class="breakdown-cost">$42K</span></div>
+                        <div class="breakdown-bar"><div class="breakdown-fill" style="width: 29.6%"></div></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-info"><span class="breakdown-name">Harness CD</span><span class="breakdown-cost">$38K</span></div>
+                        <div class="breakdown-bar"><div class="breakdown-fill" style="width: 26.8%"></div></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-info"><span class="breakdown-name">Fortify + Sonatype</span><span class="breakdown-cost">$28K</span></div>
+                        <div class="breakdown-bar"><div class="breakdown-fill" style="width: 19.7%"></div></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-info"><span class="breakdown-name">Nexus Repository</span><span class="breakdown-cost">$18K</span></div>
+                        <div class="breakdown-bar"><div class="breakdown-fill" style="width: 12.7%"></div></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-info"><span class="breakdown-name">Wiz Cloud Security</span><span class="breakdown-cost">$12K</span></div>
+                        <div class="breakdown-bar"><div class="breakdown-fill" style="width: 8.5%"></div></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-info"><span class="breakdown-name">Cloud Dev Environments</span><span class="breakdown-cost">$4K</span></div>
+                        <div class="breakdown-bar"><div class="breakdown-fill" style="width: 2.8%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Revenue Impact Metrics -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">📈</span>
+                <h2 class="section-title">Revenue Impact Metrics</h2>
+            </div>
+            <div class="revenue-grid">
+                <div class="revenue-card revenue-total">
+                    <div class="revenue-icon">💵</div>
+                    <div class="revenue-label">Total Platform Revenue</div>
+                    <div class="revenue-value-large">$847M</div>
+                    <div class="revenue-sublabel">annual recurring</div>
+                </div>
+                <div class="revenue-card revenue-deploy">
+                    <div class="revenue-icon">🚀</div>
+                    <div class="revenue-label">Revenue per Deploy</div>
+                    <div class="revenue-value">$143K</div>
+                    <div class="revenue-sublabel">avg per deployment</div>
+                </div>
+                <div class="revenue-card revenue-developer">
+                    <div class="revenue-icon">👨‍💻</div>
+                    <div class="revenue-label">Revenue per Developer</div>
+                    <div class="revenue-value">$2.1M</div>
+                    <div class="revenue-sublabel">per dev annually</div>
+                </div>
+                <div class="revenue-card revenue-velocity">
+                    <div class="revenue-icon">📈</div>
+                    <div class="revenue-label">Deploy Velocity Impact</div>
+                    <div class="revenue-value">+18%</div>
+                    <div class="revenue-sublabel">YoY revenue growth</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p class="footer-text">PLATFORM AS A PRODUCT * OPERATIONS DASHBOARD</p>
+        </footer>
+    </div>
+
+    <script>
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = now.toLocaleString();
+        }
+        updateTimestamp();
+        setInterval(updateTimestamp, 60000);
+
+        // Sankey Diagram
+        function renderSankeyDiagram() {
+            const container = document.getElementById('sankey-diagram');
+            if (!container) return;
+
+            // Clear any existing content
+            container.innerHTML = '';
+
+            // Get dimensions
+            const margin = { top: 20, right: 120, bottom: 20, left: 120 };
+            const width = container.clientWidth - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            // Create SVG
+            const svg = d3.select('#sankey-diagram')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            // Sankey data - deployment flow
+            const data = {
+                nodes: [
+                    // Languages (0-3)
+                    { name: '☕ Java', category: 'language' },
+                    { name: '🔷 .NET', category: 'language' },
+                    { name: '🐍 Python', category: 'language' },
+                    { name: '⚡ JavaScript', category: 'language' },
+                    // Strategies (4-6)
+                    { name: '🔄 Rolling', category: 'strategy' },
+                    { name: '🔀 Blue-Green', category: 'strategy' },
+                    { name: '🐤 Canary', category: 'strategy' },
+                    // Destinations (7-9)
+                    { name: '🌐 Public Cloud', category: 'destination' },
+                    { name: '🏢 On-Prem', category: 'destination' },
+                    { name: '🔒 Private Cloud', category: 'destination' }
+                ],
+                links: [
+                    // Java flows
+                    { source: 0, target: 4, value: 420 },
+                    { source: 0, target: 5, value: 280 },
+                    { source: 0, target: 6, value: 156 },
+                    // .NET flows
+                    { source: 1, target: 4, value: 350 },
+                    { source: 1, target: 5, value: 220 },
+                    { source: 1, target: 6, value: 164 },
+                    // Python flows
+                    { source: 2, target: 4, value: 510 },
+                    { source: 2, target: 5, value: 306 },
+                    { source: 2, target: 6, value: 205 },
+                    // JavaScript flows
+                    { source: 3, target: 4, value: 826 },
+                    { source: 3, target: 5, value: 516 },
+                    { source: 3, target: 6, value: 312 },
+                    // Rolling -> Cloud destinations
+                    { source: 4, target: 7, value: 1102 },
+                    { source: 4, target: 8, value: 568 },
+                    { source: 4, target: 9, value: 436 },
+                    // Blue-Green -> Cloud destinations
+                    { source: 5, target: 7, value: 687 },
+                    { source: 5, target: 8, value: 356 },
+                    { source: 5, target: 9, value: 279 },
+                    // Canary -> Cloud destinations
+                    { source: 6, target: 7, value: 510 },
+                    { source: 6, target: 8, value: 256 },
+                    { source: 6, target: 9, value: 71 }
+                ]
+            };
+
+            // Color scale by category
+            const colorScale = {
+                language: '#ff6600',
+                strategy: '#8b5cf6',
+                destination: '#10b981'
+            };
+
+            // Create sankey generator
+            const sankey = d3.sankey()
+                .nodeWidth(20)
+                .nodePadding(24)
+                .extent([[0, 0], [width, height]]);
+
+            // Generate the sankey diagram
+            const { nodes, links } = sankey(data);
+
+            // Add gradient definitions
+            const defs = svg.append('defs');
+
+            links.forEach((link, i) => {
+                const gradient = defs.append('linearGradient')
+                    .attr('id', `gradient-${i}`)
+                    .attr('gradientUnits', 'userSpaceOnUse')
+                    .attr('x1', link.source.x1)
+                    .attr('x2', link.target.x0);
+
+                gradient.append('stop')
+                    .attr('offset', '0%')
+                    .attr('stop-color', colorScale[link.source.category]);
+
+                gradient.append('stop')
+                    .attr('offset', '100%')
+                    .attr('stop-color', colorScale[link.target.category]);
+            });
+
+            // Add links
+            svg.append('g')
+                .attr('class', 'sankey-links')
+                .selectAll('path')
+                .data(links)
+                .join('path')
+                .attr('class', 'sankey-link')
+                .attr('d', d3.sankeyLinkHorizontal())
+                .attr('stroke', (d, i) => `url(#gradient-${i})`)
+                .attr('stroke-width', d => Math.max(1, d.width))
+                .append('title')
+                .text(d => `${d.source.name} → ${d.target.name}\n${d.value.toLocaleString()} deployments`);
+
+            // Add nodes
+            const node = svg.append('g')
+                .attr('class', 'sankey-nodes')
+                .selectAll('g')
+                .data(nodes)
+                .join('g')
+                .attr('class', 'sankey-node');
+
+            // Node rectangles
+            node.append('rect')
+                .attr('x', d => d.x0)
+                .attr('y', d => d.y0)
+                .attr('height', d => d.y1 - d.y0)
+                .attr('width', d => d.x1 - d.x0)
+                .attr('fill', d => colorScale[d.category])
+                .attr('rx', 4)
+                .attr('ry', 4)
+                .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))')
+                .append('title')
+                .text(d => `${d.name}\n${d.value.toLocaleString()} deployments`);
+
+            // Node labels
+            node.append('text')
+                .attr('x', d => d.x0 < width / 2 ? d.x1 + 8 : d.x0 - 8)
+                .attr('y', d => (d.y1 + d.y0) / 2)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
+                .text(d => d.name)
+                .style('fill', '#f4f4f4')
+                .style('font-size', '13px')
+                .style('font-weight', '600');
+
+            // Node values
+            node.append('text')
+                .attr('x', d => d.x0 < width / 2 ? d.x1 + 8 : d.x0 - 8)
+                .attr('y', d => (d.y1 + d.y0) / 2 + 16)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
+                .text(d => d.value.toLocaleString())
+                .style('fill', '#909090')
+                .style('font-size', '11px')
+                .style('font-family', "'JetBrains Mono', monospace");
+        }
+
+        // Render on load
+        document.addEventListener('DOMContentLoaded', renderSankeyDiagram);
+
+        // Re-render on resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(renderSankeyDiagram, 250);
+        });
+    </script>
+</body>
+</html>
