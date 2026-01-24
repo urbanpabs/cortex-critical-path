@@ -1495,16 +1495,16 @@ Engineering awaits, with 1,690 applications to bring to the unified platform.
 
 #### Section 2: The Sherpas (Expedition Team)
 
-| Role | Mission | Key Members |
-|------|---------|-------------|
-| Summit Leaders | Set the vision, fund the expedition | Amanda Rodriguez (SVP), Lisa Park (VP), Kevin O'Brien (VP) |
-| Trail Blazers | Architect the path through complexity | Diana Chen, Amir Hassan, Nicole Foster (Architects) |
-| Route Builders | Construct the solutions & capabilities | Derek Chang, Sofia Ramirez, Tyler Morrison (Staff Engineers) |
-| Base Camp | Supplies, clearance & logistics | Marcus Chen (Procurement), Jennifer Walsh (Security), Rachel Nguyen (Compliance) |
+| Role | Count | Mission | Key Members |
+|------|-------|---------|-------------|
+| Summit Leaders | 3 | Set the vision, fund the expedition | Amanda Rodriguez (SVP), Lisa Park (VP), Kevin O'Brien (VP) |
+| Trail Blazers | 2 | Architect the path through complexity | Amir Hassan, Nicole Foster (Platform Architects) |
+| Route Builders | 5 | Pave the path & construct capabilities | Derek Chang, Sofia Ramirez, Tyler Morrison, Jasmine Liu, Michael Thornton |
+| Base Camp | 5 | Product vision, supplies & clearance | Rachel Martinez, Chris Thompson (Product Leads), Marcus Chen, Jennifer Walsh, Rachel Nguyen |
 
 **Visual Treatment:**
 - Four sherpa cards with distinct color themes (gold, purple, green, blue)
-- Each card lists 3 key team members with titles
+- Cards list team members with titles (3, 2, 5, 5 respectively)
 - Icons represent expedition roles
 
 #### Section 3: The Complexity Terrain
