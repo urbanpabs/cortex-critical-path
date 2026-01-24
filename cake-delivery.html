@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cake Delivery | Platform as a Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fiserv-blue: #237cb8;
+            --fiserv-orange: #ff6600;
+            --fiserv-black: #0e0e0e;
+            --fiserv-gray: #666666;
+
+            /* Product Colors */
+            --coder-color: #10b981;
+            --cortex-color: #237cb8;
+            --kratix-color: #8b5cf6;
+
+            --bg-primary: #0e0e0e;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #252525;
+
+            --text-primary: #f4f4f4;
+            --text-secondary: #bbbbbb;
+            --text-muted: #909090;
+
+            --border-subtle: rgba(187, 187, 187, 0.12);
+            --critical-path: linear-gradient(90deg, #666666, #237cb8, #ff6600);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(35, 124, 184, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 102, 0, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(102, 102, 102, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 102, 102, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .logo-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--fiserv-orange);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        h1 span {
+            background: var(--critical-path);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* The Cake Section */
+        .cake-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-heading {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* Cake Visualization */
+        .cake-container {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cake-visual {
+            position: relative;
+            width: 400px;
+            perspective: 1000px;
+        }
+
+        .cake-layer {
+            position: relative;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: -10px;
+            transform: rotateX(5deg);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cake-layer:hover {
+            transform: rotateX(5deg) translateY(-8px);
+            z-index: 10;
+        }
+
+        .cake-layer.coder {
+            background: linear-gradient(135deg, var(--coder-color), #059669);
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4),
+                        inset 0 -8px 20px rgba(0,0,0,0.2);
+            z-index: 3;
+        }
+
+        .cake-layer.cortex {
+            background: linear-gradient(135deg, var(--cortex-color), #1e6091);
+            box-shadow: 0 10px 40px rgba(35, 124, 184, 0.4),
+                        inset 0 -8px 20px rgba(0,0,0,0.2);
+            z-index: 2;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .cake-layer.kratix {
+            background: linear-gradient(135deg, var(--kratix-color), #6d28d9);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4),
+                        inset 0 -8px 20px rgba(0,0,0,0.2);
+            z-index: 1;
+            margin-left: 40px;
+            margin-right: 40px;
+            border-radius: 20px 20px 30px 30px;
+        }
+
+        .layer-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .layer-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .layer-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .layer-info p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .layer-tag {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .cake-legend {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            transition: all 0.2s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateX(4px);
+        }
+
+        .legend-item.coder { border-left-color: var(--coder-color); }
+        .legend-item.cortex { border-left-color: var(--cortex-color); }
+        .legend-item.kratix { border-left-color: var(--kratix-color); }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .legend-item.coder .legend-dot { background: var(--coder-color); }
+        .legend-item.cortex .legend-dot { background: var(--cortex-color); }
+        .legend-item.kratix .legend-dot { background: var(--kratix-color); }
+
+        .legend-text h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .legend-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Slicing Comparison */
+        .slicing-section {
+            margin-bottom: 4rem;
+        }
+
+        .slicing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .slicing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .slicing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slicing-card.bad {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .slicing-card.good {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .slicing-card.bad::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .slicing-card.good::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .slicing-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slicing-icon {
+            font-size: 2rem;
+        }
+
+        .slicing-title h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .slicing-title p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .slicing-visual {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Horizontal slicing visual */
+        .horizontal-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .h-layer {
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .h-layer.coder { background: var(--coder-color); }
+        .h-layer.cortex { background: var(--cortex-color); }
+        .h-layer.kratix { background: var(--kratix-color); }
+
+        .h-layer .progress-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.3);
+            transition: width 0.3s ease;
+        }
+
+        .h-layer span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Vertical slicing visual */
+        .vertical-slices {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .v-slice {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .v-slice.complete .v-segment { opacity: 1; }
+        .v-slice.partial .v-segment:nth-child(1) { opacity: 1; }
+        .v-slice.partial .v-segment:nth-child(2) { opacity: 0.5; }
+        .v-slice.partial .v-segment:nth-child(3) { opacity: 0.3; }
+        .v-slice.pending .v-segment { opacity: 0.2; }
+
+        .v-segment {
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .v-segment.coder { background: var(--coder-color); }
+        .v-segment.cortex { background: var(--cortex-color); }
+        .v-segment.kratix { background: var(--kratix-color); }
+
+        .v-slice-label {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .slicing-points {
+            list-style: none;
+        }
+
+        .slicing-points li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .slicing-points li::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .slicing-card.bad .slicing-points li::before {
+            background: #ef4444;
+        }
+
+        .slicing-card.good .slicing-points li::before {
+            background: #10b981;
+        }
+
+        /* Delivery Roadmap */
+        .roadmap-section {
+            margin-bottom: 4rem;
+        }
+
+        .roadmap-container {
+            position: relative;
+        }
+
+        .roadmap-timeline {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--coder-color), var(--cortex-color), var(--kratix-color));
+            border-radius: 2px;
+            transform: translateX(-50%);
+        }
+
+        @media (max-width: 900px) {
+            .roadmap-timeline {
+                left: 20px;
+            }
+        }
+
+        .slice-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .slice-card:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .slice-card:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        @media (max-width: 900px) {
+            .slice-card,
+            .slice-card:nth-child(even) {
+                flex-direction: row;
+                padding-left: 50px;
+            }
+        }
+
+        .slice-marker {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            z-index: 2;
+        }
+
+        @media (max-width: 900px) {
+            .slice-marker {
+                left: 20px;
+            }
+        }
+
+        .slice-marker.phase0 { background: var(--fiserv-gray); }
+        .slice-marker.phase1 { background: var(--fiserv-blue); }
+        .slice-marker.phase2 { background: var(--fiserv-orange); }
+        .slice-marker.scale { background: linear-gradient(135deg, var(--kratix-color), #FFD700); }
+
+        .slice-content {
+            width: calc(50% - 40px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .slice-content {
+                width: 100%;
+            }
+        }
+
+        .slice-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .slice-phase {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.25rem 0.5rem;
+            border-radius: 100px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .slice-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .slice-stack {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .slice-stack-item {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .slice-stack-item.coder { background: var(--coder-color); }
+        .slice-stack-item.cortex { background: var(--cortex-color); }
+        .slice-stack-item.kratix { background: var(--kratix-color); }
+
+        .slice-capabilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .slice-cap {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 100px;
+            color: var(--text-secondary);
+        }
+
+        /* The Message */
+        .message-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--kratix-color), var(--cortex-color), var(--coder-color));
+        }
+
+        .message-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .message-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .message-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        .message-quote {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(35, 124, 184, 0.2), rgba(16, 185, 129, 0.2));
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">
+                <span>&larr;</span>
+                <span>Back to Critical Path</span>
+            </a>
+        </nav>
+
+        <header>
+            <div class="logo-badge">DELIVERY STRATEGY</div>
+            <h1>Bake the Layers, <span>Serve the Slices</span></h1>
+            <p class="subtitle">Each team builds their layer of the platform cake, but we deliver value to developers through vertical slices that cut through all three products.</p>
+        </header>
+
+        <!-- The Cake Section -->
+        <section class="cake-section">
+            <div class="section-title">
+                <div class="section-label">The Platform Stack</div>
+                <h2 class="section-heading">Our Three-Layer Cake</h2>
+            </div>
+
+            <div class="cake-container">
+                <div class="cake-visual">
+                    <div class="cake-layer coder">
+                        <div class="layer-content">
+                            <div class="layer-icon">&#128187;</div>
+                            <div class="layer-info">
+                                <h3>Coder</h3>
+                                <p>Cloud Development Environment</p>
+                            </div>
+                        </div>
+                        <span class="layer-tag">Experience</span>
+                    </div>
+                    <div class="cake-layer cortex">
+                        <div class="layer-content">
+                            <div class="layer-icon">&#129504;</div>
+                            <div class="layer-info">
+                                <h3>Cortex</h3>
+                                <p>Internal Developer Platform</p>
+                            </div>
+                        </div>
+                        <span class="layer-tag">Visibility</span>
+                    </div>
+                    <div class="cake-layer kratix">
+                        <div class="layer-content">
+                            <div class="layer-icon">&#9881;</div>
+                            <div class="layer-info">
+                                <h3>Kratix</h3>
+                                <p>Platform Orchestrator</p>
+                            </div>
+                        </div>
+                        <span class="layer-tag">Foundation</span>
+                    </div>
+                </div>
+
+                <div class="cake-legend">
+                    <div class="legend-item coder">
+                        <div class="legend-dot"></div>
+                        <div class="legend-text">
+                            <h4>Coder — The Frosting</h4>
+                            <p>What developers touch first. Workspace templates, IDE integrations, instant dev environments. The delicious first bite.</p>
+                        </div>
+                    </div>
+                    <div class="legend-item cortex">
+                        <div class="legend-dot"></div>
+                        <div class="legend-text">
+                            <h4>Cortex — The Filling</h4>
+                            <p>The rich middle layer. Service catalog, scorecards, workflows, engineering intelligence. Brings everything together.</p>
+                        </div>
+                    </div>
+                    <div class="legend-item kratix">
+                        <div class="legend-dot"></div>
+                        <div class="legend-text">
+                            <h4>Kratix — The Base</h4>
+                            <p>The sturdy foundation. Promises, Harness integration, multi-cluster orchestration. Holds everything up.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slicing Comparison -->
+        <section class="slicing-section">
+            <div class="section-title">
+                <div class="section-label">Delivery Approach</div>
+                <h2 class="section-heading">Horizontal vs Vertical Slicing</h2>
+            </div>
+
+            <div class="slicing-grid">
+                <!-- Horizontal (Bad) -->
+                <div class="slicing-card bad">
+                    <div class="slicing-header">
+                        <div class="slicing-icon">&#128683;</div>
+                        <div class="slicing-title">
+                            <h3>Horizontal Slicing</h3>
+                            <p>Complete each layer before integration</p>
+                        </div>
+                    </div>
+
+                    <div class="slicing-visual">
+                        <div class="horizontal-layers">
+                            <div class="h-layer coder">
+                                <div class="progress-bar" style="width: 100%;"></div>
+                                <span>Coder: All templates complete</span>
+                            </div>
+                            <div class="h-layer cortex">
+                                <div class="progress-bar" style="width: 60%;"></div>
+                                <span>Cortex: Building scorecards...</span>
+                            </div>
+                            <div class="h-layer kratix">
+                                <div class="progress-bar" style="width: 30%;"></div>
+                                <span>Kratix: Starting promises...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="slicing-points">
+                        <li>No value delivered until all layers complete</li>
+                        <li>Integration problems discovered late</li>
+                        <li>Teams work in silos</li>
+                        <li>Long feedback loops</li>
+                        <li>Risk concentrated at the end</li>
+                    </ul>
+                </div>
+
+                <!-- Vertical (Good) -->
+                <div class="slicing-card good">
+                    <div class="slicing-header">
+                        <div class="slicing-icon">&#9989;</div>
+                        <div class="slicing-title">
+                            <h3>Vertical Slicing</h3>
+                            <p>Deliver end-to-end value incrementally</p>
+                        </div>
+                    </div>
+
+                    <div class="slicing-visual">
+                        <div class="vertical-slices">
+                            <div class="v-slice complete">
+                                <div class="v-segment coder">CDE</div>
+                                <div class="v-segment cortex">CAT</div>
+                                <div class="v-segment kratix">AKS</div>
+                                <div class="v-slice-label">Java</div>
+                            </div>
+                            <div class="v-slice complete">
+                                <div class="v-segment coder">CDE</div>
+                                <div class="v-segment cortex">SC</div>
+                                <div class="v-segment kratix">AKS</div>
+                                <div class="v-slice-label">.NET</div>
+                            </div>
+                            <div class="v-slice partial">
+                                <div class="v-segment coder">CDE</div>
+                                <div class="v-segment cortex">...</div>
+                                <div class="v-segment kratix">...</div>
+                                <div class="v-slice-label">Python</div>
+                            </div>
+                            <div class="v-slice pending">
+                                <div class="v-segment coder"></div>
+                                <div class="v-segment cortex"></div>
+                                <div class="v-segment kratix"></div>
+                                <div class="v-slice-label">Go</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="slicing-points">
+                        <li>Developers get value immediately</li>
+                        <li>Integration validated early and often</li>
+                        <li>Teams collaborate on each slice</li>
+                        <li>Fast feedback loops</li>
+                        <li>Risk spread across iterations</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Delivery Roadmap -->
+        <section class="roadmap-section">
+            <div class="section-title">
+                <div class="section-label">Capability Delivery</div>
+                <h2 class="section-heading">Serving the Slices</h2>
+            </div>
+
+            <div class="roadmap-container">
+                <div class="roadmap-timeline"></div>
+
+                <!-- Phase 0 Slice -->
+                <div class="slice-card">
+                    <div class="slice-marker phase0">&#9881;</div>
+                    <div class="slice-content">
+                        <div class="slice-header">
+                            <span class="slice-phase">Phase 0</span>
+                        </div>
+                        <div class="slice-title">Foundation Slice: Java on AKS</div>
+                        <div class="slice-stack">
+                            <div class="slice-stack-item kratix"></div>
+                            <div class="slice-stack-item cortex"></div>
+                            <div class="slice-stack-item coder"></div>
+                        </div>
+                        <div class="slice-capabilities">
+                            <span class="slice-cap">Java/Spring Boot</span>
+                            <span class="slice-cap">Maven</span>
+                            <span class="slice-cap">Rolling Update</span>
+                            <span class="slice-cap">Containers</span>
+                            <span class="slice-cap">AKS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 1 Slice -->
+                <div class="slice-card">
+                    <div class="slice-marker phase1">&#128200;</div>
+                    <div class="slice-content">
+                        <div class="slice-header">
+                            <span class="slice-phase">Phase 1</span>
+                        </div>
+                        <div class="slice-title">Visibility Slice: Scorecards + Intelligence</div>
+                        <div class="slice-stack">
+                            <div class="slice-stack-item kratix"></div>
+                            <div class="slice-stack-item cortex"></div>
+                            <div class="slice-stack-item coder"></div>
+                        </div>
+                        <div class="slice-capabilities">
+                            <span class="slice-cap">Production Readiness</span>
+                            <span class="slice-cap">Security Scorecard</span>
+                            <span class="slice-cap">DORA Metrics</span>
+                            <span class="slice-cap">One-Touch Assembly</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 Slice -->
+                <div class="slice-card">
+                    <div class="slice-marker phase2">&#128640;</div>
+                    <div class="slice-content">
+                        <div class="slice-header">
+                            <span class="slice-phase">Phase 2</span>
+                        </div>
+                        <div class="slice-title">Multi-Cloud Slice: Java on EKS</div>
+                        <div class="slice-stack">
+                            <div class="slice-stack-item kratix"></div>
+                            <div class="slice-stack-item cortex"></div>
+                            <div class="slice-stack-item coder"></div>
+                        </div>
+                        <div class="slice-capabilities">
+                            <span class="slice-cap">EKS Promises</span>
+                            <span class="slice-cap">Blue-Green Deploy</span>
+                            <span class="slice-cap">Cross-Cloud Catalog</span>
+                            <span class="slice-cap">Unified Workflows</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scale Slice -->
+                <div class="slice-card">
+                    <div class="slice-marker scale">&#127942;</div>
+                    <div class="slice-content">
+                        <div class="slice-header">
+                            <span class="slice-phase">Scale</span>
+                        </div>
+                        <div class="slice-title">Full Stack Slices: All Languages + Strategies</div>
+                        <div class="slice-stack">
+                            <div class="slice-stack-item kratix"></div>
+                            <div class="slice-stack-item cortex"></div>
+                            <div class="slice-stack-item coder"></div>
+                        </div>
+                        <div class="slice-capabilities">
+                            <span class="slice-cap">.NET + Python + Go + JS</span>
+                            <span class="slice-cap">Canary + Feature Flags</span>
+                            <span class="slice-cap">Serverless + VMs</span>
+                            <span class="slice-cap">1,690 Apps</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Message -->
+        <section class="message-section">
+            <div class="message-icon">&#127856;</div>
+            <h2 class="message-title">Bake Your Layer, But Deliver Together</h2>
+            <p class="message-text">
+                Each team owns their layer of the cake. Kratix builds the promises. Cortex builds the catalog and scorecards. Coder builds the workspace templates. But we don't serve layers — we serve <strong>slices</strong>. Every slice cuts through all three products to deliver complete, end-to-end value to our developer community.
+            </p>
+            <div class="message-quote">
+                "Nobody wants a mouthful of frosting. They want the whole slice."
+            </div>
+        </section>
+
+        <footer>
+            <p class="footer-text">PLATFORM AS A PRODUCT • CAKE DELIVERY</p>
+        </footer>
+    </div>
+</body>
+</html>

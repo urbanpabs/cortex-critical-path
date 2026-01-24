@@ -1410,4 +1410,65 @@ Engineering awaits, with 1,690 applications to bring to the unified platform.
 
 ---
 
+### Session: January 24, 2026 — Cake Delivery Visualization
+
+#### New Page: Cake Delivery (`cake-delivery.html`)
+
+**Concept:** Visualizes the Portal to Platform Engineering as a three-layer cake (Coder, Cortex, Kratix) and communicates the importance of vertical slicing vs horizontal slicing for delivery.
+
+**The Cake Metaphor:**
+
+| Layer | Product | Role | Description |
+|-------|---------|------|-------------|
+| Top | Coder | The Frosting | What developers touch first — workspaces, templates, IDE |
+| Middle | Cortex | The Filling | The rich middle — catalog, scorecards, workflows |
+| Bottom | Kratix | The Base | The foundation — promises, Harness, orchestration |
+
+**Key Message:** "Bake Your Layer, But Deliver Together"
+- Each team owns their layer of the cake
+- But we don't serve layers — we serve **slices**
+- Every slice cuts through all three products to deliver end-to-end value
+
+**Horizontal vs Vertical Slicing:**
+
+| Approach | Description | Outcome |
+|----------|-------------|---------|
+| Horizontal (Anti-pattern) | Complete each layer before integration | No value until all complete, late integration, silos |
+| Vertical (Goal) | Deliver thin end-to-end slices | Immediate value, early integration, collaboration |
+
+**Delivery Roadmap Slices:**
+
+| Phase | Slice Name | Capabilities |
+|-------|------------|--------------|
+| Phase 0 | Foundation Slice: Java on AKS | Java, Maven, Rolling, Containers, AKS |
+| Phase 1 | Visibility Slice: Scorecards + Intelligence | Production Readiness, Security, DORA, One-Touch |
+| Phase 2 | Multi-Cloud Slice: Java on EKS | EKS Promises, Blue-Green, Cross-Cloud Catalog |
+| Scale | Full Stack Slices | All languages, strategies, 1,690 apps |
+
+**Visual Elements:**
+- 3D perspective cake with layered products
+- Side-by-side horizontal vs vertical slicing comparison
+- Timeline roadmap with phase markers
+- Closing message with quote: "Nobody wants a mouthful of frosting. They want the whole slice."
+
+#### Index Page Navigation Update
+
+**New Button Added (Row 2, after Platform Journey):**
+```html
+<a href="cake-delivery.html" class="nav-btn">
+    <span>🍰</span>
+    <span>Cake Delivery</span>
+    <span>→</span>
+</a>
+```
+
+#### Project Files Update
+
+| File | Status | Purpose |
+|------|--------|---------|
+| `cake-delivery.html` | NEW | Cake metaphor visualization for vertical slicing delivery |
+| `index.html` | UPDATED | Added Cake Delivery navigation link |
+
+---
+
 *Document generated: Session aggregation for Portal to Platform Engineering Program*
