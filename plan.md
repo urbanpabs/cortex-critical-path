@@ -1287,4 +1287,127 @@ Our engineers are drowning in tools, not building products.
 
 ---
 
+### Session: January 24, 2026 — Platform Journey Expedition Map
+
+#### New Page: Platform Journey (`platform-journey.html`)
+
+**Concept:** Inspired by Inca Trail hiking maps (kenkoadventures.com), this page visualizes the platform transformation journey as an expedition from current state chaos to the summit of unified platform engineering.
+
+**The Trail Metaphor:**
+
+| Phase | Trail Equivalent | Icon | Description |
+|-------|-----------------|------|-------------|
+| Current State | Trailhead | 😵 | 30+ tools, 40 URLs (the chaos starting point) |
+| Phase 0 | Base Camp | ⛺ | Foundation & contract execution |
+| Phase 1 | Summit Push | 🏔️ | PoV Workshop (peak complexity - hardest climb) |
+| Phase 2 | Ridge Walk | 🚩 | Production pilot validation |
+| Scale | The Summit | 🏛️ | Portal to Platform Engineering (1,690 apps) |
+
+**Visual Elements:**
+
+| Element | Description |
+|---------|-------------|
+| SVG Trail Map | Gradient path (green → orange → purple → gold) with mountain silhouettes |
+| Waypoints | Interactive markers for each phase with icons and labels |
+| "You Are Here" | Orange triangle marker at current position (Phase 0) |
+| Elevation Profile | Complexity curve showing peak effort at Phase 1 |
+| Day Cards | 4 cards with landmarks, stats, and camp markers |
+
+**Journey Stats (Header):**
+- 4 Phases
+- 1,690 Apps to Summit
+- 26 Integrations
+- $1B+ Value Unlocked
+
+**Day Card Details:**
+
+| Day | Phase | Title | Key Landmarks |
+|-----|-------|-------|---------------|
+| Day 1 | Phase 0 | Base Camp | VEQ Complete, Kratix + Harness, Contract Execution, Network Connectivity |
+| Day 2 | Phase 1 | The Summit Push | Scorecards, Engineering Intelligence, One-Touch Assembly, Leadership Dashboards |
+| Day 3 | Phase 2 | The Ridge Walk | Real Java App, All Integrations, Kratix EKS Promises, License Expansion |
+| Day 4 | Scale | The Summit | MC-2 (245 apps), Business Unit Expansion, Enterprise License, Portal Complete |
+
+**Camp Markers:**
+- 🔥 Camp: Foundation Established (Phase 0)
+- 🔥 Camp: PoV Success (Phase 1)
+- 🔥 Camp: Pilot Validated (Phase 2)
+- 🏆 Summit: Frictionless Platform (Scale)
+
+**SVG Technical Details:**
+```svg
+<!-- Trail path with gradient -->
+<path d="M50,380 Q100,370... L1150,70"
+      stroke="url(#trailGradient)"
+      stroke-width="6"
+      stroke-dasharray="15,5"/>
+
+<!-- Gradient definition -->
+<linearGradient id="trailGradient">
+    <stop offset="0%" style="stop-color:#10b981" />   <!-- Green - Phase 0 -->
+    <stop offset="33%" style="stop-color:#ff6600" />  <!-- Orange - Phase 1 -->
+    <stop offset="66%" style="stop-color:#8b5cf6" />  <!-- Purple - Phase 2 -->
+    <stop offset="100%" style="stop-color:#FFD700" /> <!-- Gold - Summit -->
+</linearGradient>
+```
+
+**Elevation Profile:**
+- X-axis: Time/phases progression
+- Y-axis: Complexity level
+- Peak at Phase 1 (PoV Workshop) — represents highest effort/complexity
+- Gradual descent through Phase 2 and Scale as processes mature
+
+**Current Position Indicator:**
+```
+📍 Current Expedition Status
+We are at Base Camp (Phase 0) — establishing foundation infrastructure
+and awaiting contract execution. The summit of Portal to Platform
+Engineering awaits, with 1,690 applications to bring to the unified platform.
+```
+
+**Legend:**
+- ⛺ Base Camp (Green)
+- 🏔️ Peak Effort (Orange)
+- 🚩 Checkpoint (Purple)
+- 🏛️ Summit (Gold)
+- 🔥 Camp (Fire orange)
+
+#### Index Page Navigation Update
+
+**New Button Added (First in Row 2):**
+```html
+<a href="platform-journey.html" class="nav-btn">
+    <span>🏔️</span>
+    <span>Platform Journey</span>
+    <span>→</span>
+</a>
+```
+
+#### Project Files Update
+
+| File | Status | Purpose |
+|------|--------|---------|
+| `platform-journey.html` | NEW | Expedition-style trail map visualization |
+| `index.html` | UPDATED | Added Platform Journey navigation link |
+
+#### Design Inspiration
+
+**Source:** Inca Trail Classic 4-Day Map (kenkoadventures.com)
+
+**Key Borrowed Concepts:**
+- Multi-day journey structure with camps
+- Elevation profile showing difficulty
+- Waypoints as archaeological/landmark sites
+- Visual progression from start to destination
+- "You Are Here" positioning for current status
+
+**Adaptation for Platform Engineering:**
+- Days → Phases (0, 1, 2, Scale)
+- Camps → Milestone achievements
+- Landmarks → Key deliverables (Scorecards, Intelligence, etc.)
+- Elevation → Complexity/effort level
+- Summit → Portal to Platform Engineering
+
+---
+
 *Document generated: Session aggregation for Portal to Platform Engineering Program*
