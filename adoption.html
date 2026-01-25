@@ -35,6 +35,17 @@
             --status-blue: #3b82f6;
             --status-purple: #8b5cf6;
 
+            /* Product Colors */
+            --coder-color: #10b981;
+            --cortex-color: #237cb8;
+            --kratix-color: #8b5cf6;
+
+            /* Phase Colors */
+            --phase-0: #666666;
+            --phase-1: #237cb8;
+            --phase-2: #ff6600;
+            --phase-scale: #10b981;
+
             --border-subtle: rgba(187, 187, 187, 0.12);
         }
 
@@ -113,19 +124,119 @@
             animation: fadeIn 0.8s ease-out;
         }
 
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .logo-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--fiserv-orange);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
         .header h1 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             font-weight: 700;
-            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 .highlight {
+            background: linear-gradient(90deg, var(--cortex-color), var(--kratix-color), var(--coder-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.5rem;
         }
 
-        .header p {
-            color: var(--text-secondary);
+        .subtitle {
             font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Product Legend */
+        .product-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+        }
+
+        .product-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .product-item.coder .product-icon { background: rgba(16, 185, 129, 0.2); }
+        .product-item.cortex .product-icon { background: rgba(35, 124, 184, 0.2); }
+        .product-item.kratix .product-icon { background: rgba(139, 92, 246, 0.2); }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .product-item.coder .product-name { color: var(--coder-color); }
+        .product-item.cortex .product-name { color: var(--cortex-color); }
+        .product-item.kratix .product-name { color: var(--kratix-color); }
+
+        .product-type {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
         }
 
         /* License Consumption Hero */
@@ -756,9 +867,35 @@
         </nav>
 
         <!-- Header -->
-        <div class="header">
-            <h1>Adoption Strategy</h1>
-            <p>License Consumption & Developer Adoption Tracking | Flight Deck Platform</p>
+        <header class="header">
+            <div class="logo-badge">PLATFORM AS A PRODUCT</div>
+            <h1>Adoption <span class="highlight">Strategy</span></h1>
+            <p class="subtitle">License consumption & developer adoption tracking across 1,690 production applications</p>
+        </header>
+
+        <!-- Product Legend -->
+        <div class="product-legend">
+            <div class="product-item coder">
+                <div class="product-icon">💻</div>
+                <div class="product-info">
+                    <div class="product-name">Coder</div>
+                    <div class="product-type">Cloud Dev Environment</div>
+                </div>
+            </div>
+            <div class="product-item cortex">
+                <div class="product-icon">🧠</div>
+                <div class="product-info">
+                    <div class="product-name">Cortex</div>
+                    <div class="product-type">Internal Dev Platform</div>
+                </div>
+            </div>
+            <div class="product-item kratix">
+                <div class="product-icon">⚙️</div>
+                <div class="product-info">
+                    <div class="product-name">Kratix</div>
+                    <div class="product-type">Platform Orchestrator</div>
+                </div>
+            </div>
         </div>
 
         <!-- License Consumption Hero -->
@@ -927,45 +1064,45 @@
             </div>
         </div>
 
-        <!-- Mission Critical Rollout -->
+        <!-- Cohort Rollout -->
         <div class="rollout-section">
             <div class="section-header">
-                <h2>Mission Critical Application Rollout</h2>
+                <h2>Cohort Application Rollout</h2>
             </div>
             <div class="rollout-grid">
                 <div class="rollout-card mc1">
                     <div class="rollout-tier">
-                        <span class="tier-badge mc1">MC-1</span>
-                        <span class="rollout-title">Core Banking</span>
+                        <span class="tier-badge mc1">Cohort 1</span>
+                        <span class="rollout-title">Card Services</span>
                     </div>
-                    <div class="rollout-apps">85 <span>apps</span></div>
-                    <div class="rollout-desc">Highest criticality - Core banking & payment systems</div>
+                    <div class="rollout-apps">168 <span>apps</span></div>
+                    <div class="rollout-desc">7 VPs • 44 App Owners • Core credit, debit, and prepaid card processing</div>
                     <div class="rollout-progress">
                         <div class="progress-row">
                             <span class="progress-label">Cataloged</span>
-                            <span class="progress-value">12/85</span>
+                            <span class="progress-value">12/168</span>
                         </div>
                         <div class="rollout-bar">
-                            <div class="rollout-bar-fill mc1" style="width: 14%"></div>
+                            <div class="rollout-bar-fill mc1" style="width: 7%"></div>
                         </div>
                         <div class="progress-row">
                             <span class="progress-label">Target: Q3 2026</span>
-                            <span class="progress-value">14%</span>
+                            <span class="progress-value">7%</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="rollout-card mc2">
                     <div class="rollout-tier">
-                        <span class="tier-badge mc2">MC-2</span>
-                        <span class="rollout-title">Business Critical</span>
+                        <span class="tier-badge mc2">Cohort 2</span>
+                        <span class="rollout-title">Issuer Solutions</span>
                     </div>
-                    <div class="rollout-apps">245 <span>apps</span></div>
-                    <div class="rollout-desc">High criticality - Essential business operations</div>
+                    <div class="rollout-apps">221 <span>apps</span></div>
+                    <div class="rollout-desc">10 VPs • 48 App Owners • Card program management and fraud prevention</div>
                     <div class="rollout-progress">
                         <div class="progress-row">
                             <span class="progress-label">Cataloged</span>
-                            <span class="progress-value">5/245</span>
+                            <span class="progress-value">5/221</span>
                         </div>
                         <div class="rollout-bar">
                             <div class="rollout-bar-fill mc2" style="width: 2%"></div>
@@ -977,46 +1114,46 @@
                     </div>
                 </div>
 
-                <div class="rollout-card mc3">
+                <div class="rollout-card mc3" style="opacity: 0.6;">
                     <div class="rollout-tier">
-                        <span class="tier-badge mc3">MC-3</span>
-                        <span class="rollout-title">Supporting</span>
+                        <span class="tier-badge mc3">Cohort 3</span>
+                        <span class="rollout-title">🔒 Pending</span>
                     </div>
-                    <div class="rollout-apps">520 <span>apps</span></div>
-                    <div class="rollout-desc">Medium criticality - Supporting services</div>
+                    <div class="rollout-apps">— <span>apps</span></div>
+                    <div class="rollout-desc">Pending additional contractual buy-up before planning</div>
                     <div class="rollout-progress">
                         <div class="progress-row">
                             <span class="progress-label">Cataloged</span>
-                            <span class="progress-value">3/520</span>
+                            <span class="progress-value">—</span>
                         </div>
                         <div class="rollout-bar">
-                            <div class="rollout-bar-fill mc3" style="width: 0.5%"></div>
+                            <div class="rollout-bar-fill mc3" style="width: 0%"></div>
                         </div>
                         <div class="progress-row">
-                            <span class="progress-label">Target: Q1 2027</span>
-                            <span class="progress-value">0.5%</span>
+                            <span class="progress-label">Target: TBD</span>
+                            <span class="progress-value">—</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="rollout-card mc4">
+                <div class="rollout-card mc4" style="opacity: 0.6;">
                     <div class="rollout-tier">
-                        <span class="tier-badge mc4">MC-4</span>
-                        <span class="rollout-title">Standard</span>
+                        <span class="tier-badge mc4">Cohort 4</span>
+                        <span class="rollout-title">🔒 Pending</span>
                     </div>
-                    <div class="rollout-apps">840 <span>apps</span></div>
-                    <div class="rollout-desc">Standard criticality - Internal & dev tools</div>
+                    <div class="rollout-apps">— <span>apps</span></div>
+                    <div class="rollout-desc">Pending additional contractual buy-up before planning</div>
                     <div class="rollout-progress">
                         <div class="progress-row">
                             <span class="progress-label">Cataloged</span>
-                            <span class="progress-value">0/840</span>
+                            <span class="progress-value">—</span>
                         </div>
                         <div class="rollout-bar">
                             <div class="rollout-bar-fill mc4" style="width: 0%"></div>
                         </div>
                         <div class="progress-row">
-                            <span class="progress-label">Target: Q2 2027</span>
-                            <span class="progress-value">0%</span>
+                            <span class="progress-label">Target: TBD</span>
+                            <span class="progress-value">—</span>
                         </div>
                     </div>
                 </div>
@@ -1181,8 +1318,8 @@
                         <div class="phase-dot upcoming"></div>
                         <div class="phase-content">
                             <div class="phase-quarter">Q2 2026</div>
-                            <div class="phase-title">MC-1 Rollout</div>
-                            <div class="phase-target">85 Critical Apps</div>
+                            <div class="phase-title">Cohort 1</div>
+                            <div class="phase-target">Card Services (168 Apps)</div>
                             <div class="phase-seats">250 seats</div>
                         </div>
                     </div>
@@ -1190,8 +1327,8 @@
                         <div class="phase-dot upcoming"></div>
                         <div class="phase-content">
                             <div class="phase-quarter">Q3 2026</div>
-                            <div class="phase-title">MC-2 Rollout</div>
-                            <div class="phase-target">330 Apps Total</div>
+                            <div class="phase-title">Cohort 2</div>
+                            <div class="phase-target">Issuer Solutions (389 Total)</div>
                             <div class="phase-seats">400 seats</div>
                         </div>
                     </div>
@@ -1207,6 +1344,10 @@
                 </div>
             </div>
         </div>
+
+        <footer>
+            <p class="footer-text">PLATFORM AS A PRODUCT • ADOPTION STRATEGY</p>
+        </footer>
     </div>
 </body>
 </html>

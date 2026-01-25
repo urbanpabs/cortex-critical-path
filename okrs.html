@@ -34,6 +34,17 @@
             --status-red: #ef4444;
             --status-blue: #3b82f6;
 
+            /* Product Colors */
+            --coder-color: #10b981;
+            --cortex-color: #237cb8;
+            --kratix-color: #8b5cf6;
+
+            /* Phase Colors */
+            --phase-0: #666666;
+            --phase-1: #237cb8;
+            --phase-2: #ff6600;
+            --phase-scale: #10b981;
+
             --border-subtle: rgba(187, 187, 187, 0.12);
         }
 
@@ -112,19 +123,55 @@
             animation: fadeIn 0.8s ease-out;
         }
 
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .logo-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--fiserv-orange);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
         .header h1 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             font-weight: 700;
-            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 .highlight {
+            background: linear-gradient(90deg, var(--cortex-color), var(--kratix-color), var(--coder-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.5rem;
         }
 
-        .header p {
-            color: var(--text-secondary);
+        .subtitle {
             font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         /* Summary Cards */
@@ -570,6 +617,70 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* Product Legend */
+        .product-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+        }
+
+        .product-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .product-item.coder .product-icon { background: rgba(16, 185, 129, 0.2); }
+        .product-item.cortex .product-icon { background: rgba(35, 124, 184, 0.2); }
+        .product-item.kratix .product-icon { background: rgba(139, 92, 246, 0.2); }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .product-item.coder .product-name { color: var(--coder-color); }
+        .product-item.cortex .product-name { color: var(--cortex-color); }
+        .product-item.kratix .product-name { color: var(--kratix-color); }
+
+        .product-type {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
         @media (max-width: 1200px) {
             .summary-grid { grid-template-columns: repeat(2, 1fr); }
             .investment-grid { grid-template-columns: 1fr; }
@@ -596,9 +707,35 @@
         </nav>
 
         <!-- Header -->
-        <div class="header">
-            <h1>OKRs & Success Metrics</h1>
-            <p>Platform as a Product | FY2026 Objectives & Key Results</p>
+        <header class="header">
+            <div class="logo-badge">PLATFORM AS A PRODUCT</div>
+            <h1>OKRs & <span class="highlight">Success Metrics</span></h1>
+            <p class="subtitle">FY2026 Objectives & Key Results tracking progress toward 1,690 production applications</p>
+        </header>
+
+        <!-- Product Legend -->
+        <div class="product-legend">
+            <div class="product-item coder">
+                <div class="product-icon">💻</div>
+                <div class="product-info">
+                    <div class="product-name">Coder</div>
+                    <div class="product-type">Cloud Dev Environment</div>
+                </div>
+            </div>
+            <div class="product-item cortex">
+                <div class="product-icon">🧠</div>
+                <div class="product-info">
+                    <div class="product-name">Cortex</div>
+                    <div class="product-type">Internal Dev Platform</div>
+                </div>
+            </div>
+            <div class="product-item kratix">
+                <div class="product-icon">⚙️</div>
+                <div class="product-info">
+                    <div class="product-name">Kratix</div>
+                    <div class="product-type">Platform Orchestrator</div>
+                </div>
+            </div>
         </div>
 
         <!-- Summary Cards -->
@@ -644,7 +781,7 @@
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-dot upcoming"></div>
-                    <div class="timeline-label">MC-1 Rollout</div>
+                    <div class="timeline-label">Cohort 1</div>
                     <div class="timeline-date">Q3 2026</div>
                 </div>
                 <div class="timeline-item">
@@ -1011,6 +1148,10 @@
                 </div>
             </div>
         </div>
+
+        <footer>
+            <p class="footer-text">PLATFORM AS A PRODUCT • OKRs & METRICS</p>
+        </footer>
     </div>
 </body>
 </html>
