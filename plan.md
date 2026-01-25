@@ -357,6 +357,8 @@ Three integrated platform products delivering unified developer experience:
 | `policy-as-code.html` | CD maturity practices with OPA/Rego policy samples |
 | `cd-practices.json` | Minimum CD practice definitions (57 practices) |
 | `risks.html` | Risk assessment and mitigation strategies |
+| `okrs.html` | OKRs & Success Metrics dashboard (Q1 2026 objectives, DORA metrics, investment tracker) |
+| `adoption.html` | Adoption Strategy & License Consumption (500 Cortex / 1,000 Coder seats, MC-1 to MC-4 rollout) |
 
 ---
 
@@ -1555,6 +1557,122 @@ Engineering awaits, with 1,690 applications to bring to the unified platform.
 |------|--------|---------|
 | `noble-adventure.html` | NEW | Journey through complexity visualization with sherpas/stakeholders |
 | `index.html` | UPDATED | Added Noble Adventure navigation link |
+
+---
+
+### Session: January 25, 2026 — OKRs, Adoption Strategy & Platform Skills
+
+#### New Skills Added (platform-program-management)
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| Product Management | `skills/product/product-management.md` | RICE/WSJF prioritization, OKRs framework, user story mapping, product metrics, product discovery |
+| Platform Engineering Leadership | `skills/leadership/platform-engineering-leadership.md` | Team structure design, adoption strategy, DevEx assessment, culture playbook, leadership principles |
+
+**Total Skills:** 16 (was 14)
+
+#### New Pages Created (cortex-critical-path)
+
+| Page | Purpose |
+|------|---------|
+| `okrs.html` | OKRs & Success Metrics dashboard — Q1 2026 objectives, 12 key results, progress tracking, investment tracker ($20M / 500 Cortex / 1,000 Coder), DORA metrics, program timeline |
+| `adoption.html` | Adoption Strategy & License Consumption — license consumption tracking (Cortex & Coder), adoption funnel, MC-1 to MC-4 rollout plan (1,690 apps), champion network, 5 adoption pillars, consumption timeline |
+
+#### OKRs Page (`okrs.html`)
+
+**Summary Cards:**
+- 3 Strategic Objectives
+- 12 Key Results
+- 42% Overall Progress
+- Q1 Current Quarter
+
+**Q1 2026 Objectives:**
+
+| Objective | Progress | Key Results |
+|-----------|----------|-------------|
+| O1: Prove Platform Value | 40% | 4 KRs — tool integrations, demo app, Bronze scorecard, test scenarios |
+| O2: Establish Engineering Intelligence | 25% | 4 KRs — scorecards, CQL queries, leadership dashboards, DORA metrics |
+| O3: Enable Developer Self-Service | 60% | 4 KRs — Kratix promises, Coder CDE, provisioning time reduction |
+
+**Investment Tracker:**
+- Total Investment: $20M (15% spent, 25% committed, 60% remaining)
+- Cortex Licenses: 500 seats (4% active, 16% allocated, 80% available)
+- Coder Licenses: 1,000 seats (0% active, 5% allocated, 95% available)
+
+**DORA Metrics (Current State):**
+| Metric | Current | Target | Rating |
+|--------|---------|--------|--------|
+| Deployment Frequency | Weekly | On-demand | Medium |
+| Lead Time for Changes | 5 days | <1 day | Low |
+| Change Failure Rate | 12% | <5% | Medium |
+| MTTR | 4 hours | <1 hour | High |
+
+#### Adoption Page (`adoption.html`)
+
+**License Consumption Hero:**
+- Cortex: 500 total seats, 20 active (4%), 30 pilot, 50 allocated
+- Coder: 1,000 total seats, 0 active (0%), 50 pilot, 0 allocated
+
+**Adoption Funnel:**
+| Stage | Count | Percentage |
+|-------|-------|------------|
+| Awareness | 1,690 apps | 100% |
+| Trial | 169 apps | 10% |
+| Adoption | 20 apps | 1.2% |
+| Advocacy | 8 champions | 0.5% |
+
+**Mission Critical Rollout (1,690 apps):**
+| Tier | Apps | Cataloged | Target |
+|------|------|-----------|--------|
+| MC-1 (Core Banking) | 85 | 12 (14%) | Q3 2026 |
+| MC-2 (Business Critical) | 245 | 5 (2%) | Q4 2026 |
+| MC-3 (Supporting) | 520 | 3 (0.5%) | Q1 2027 |
+| MC-4 (Standard) | 840 | 0 (0%) | Q2 2027 |
+
+**Adoption Strategy Pillars:**
+1. Make It Easy — Zero-friction getting started
+2. Make It Valuable — Solve real pain points
+3. Make It Visible — Demo days, newsletters
+4. Make It Social — Champion program
+5. Make It Required — Strategic mandates (Q3)
+
+**Champion Network:**
+- 8 Champion Teams (target: 15 by Q2)
+- 4 Active Contributors
+- 12 Docs Contributions
+
+**License Consumption Timeline:**
+| Quarter | Phase | Target Seats |
+|---------|-------|--------------|
+| Q4 2025 | Foundation | 20 |
+| Q1 2026 | PoV + Pilot | 100 |
+| Q2 2026 | MC-1 Rollout | 250 |
+| Q3 2026 | MC-2 Rollout | 400 |
+| Q4 2026 | Scale | 500 |
+
+#### Index Page Navigation Update
+
+**New Buttons Added (Row 1, after Risks):**
+```html
+<a href="okrs.html" class="nav-btn">
+    <span>🎯</span>
+    <span>OKRs & Metrics</span>
+    <span>→</span>
+</a>
+<a href="adoption.html" class="nav-btn">
+    <span>📈</span>
+    <span>Adoption Strategy</span>
+    <span>→</span>
+</a>
+```
+
+#### Project Files Update
+
+| File | Status | Purpose |
+|------|--------|---------|
+| `okrs.html` | NEW | OKRs & Success Metrics dashboard |
+| `adoption.html` | NEW | Adoption Strategy & License Consumption tracking |
+| `index.html` | UPDATED | Added OKRs & Adoption navigation links |
 
 ---
 

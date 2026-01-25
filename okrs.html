@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OKRs & Metrics | Cortex Critical Path</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fiserv-blue: #237cb8;
+            --fiserv-blue-light: #2e8bc9;
+            --fiserv-orange: #ff6600;
+            --fiserv-orange-light: #fb6400;
+            --fiserv-black: #0e0e0e;
+            --fiserv-dark: #333333;
+            --fiserv-gray: #666666;
+            --fiserv-gray-light: #909090;
+            --fiserv-silver: #bbbbbb;
+            --fiserv-white: #ffffff;
+
+            --bg-primary: #0e0e0e;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #252525;
+            --bg-card-hover: #2f2f2f;
+
+            --text-primary: #f4f4f4;
+            --text-secondary: #bbbbbb;
+            --text-muted: #909090;
+
+            --status-green: #10b981;
+            --status-yellow: #f59e0b;
+            --status-red: #ef4444;
+            --status-blue: #3b82f6;
+
+            --border-subtle: rgba(187, 187, 187, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(35, 124, 184, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 102, 0, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(102, 102, 102, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 102, 102, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--fiserv-blue), var(--fiserv-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .summary-card:nth-child(1) { animation-delay: 0.1s; }
+        .summary-card:nth-child(2) { animation-delay: 0.2s; }
+        .summary-card:nth-child(3) { animation-delay: 0.3s; }
+        .summary-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value.green { color: var(--status-green); }
+        .summary-value.blue { color: var(--fiserv-blue); }
+        .summary-value.orange { color: var(--fiserv-orange); }
+        .summary-value.yellow { color: var(--status-yellow); }
+
+        .summary-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* OKR Section */
+        .okr-section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .phase-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .phase-badge.foundation { background: var(--fiserv-gray); color: white; }
+        .phase-badge.pov { background: var(--fiserv-blue); color: white; }
+        .phase-badge.pilot { background: var(--fiserv-orange); color: white; }
+        .phase-badge.scale { background: var(--status-green); color: white; }
+
+        /* Objective Card */
+        .objective-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .objective-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .objective-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .objective-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .objective-icon.blue { background: rgba(35, 124, 184, 0.2); color: var(--fiserv-blue); }
+        .objective-icon.orange { background: rgba(255, 102, 0, 0.2); color: var(--fiserv-orange); }
+        .objective-icon.green { background: rgba(16, 185, 129, 0.2); color: var(--status-green); }
+        .objective-icon.purple { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+
+        .objective-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .objective-why {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .objective-progress {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-ring {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 4;
+        }
+
+        .progress-ring .bg { stroke: var(--bg-secondary); }
+        .progress-ring .progress { stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Key Results */
+        .key-results {
+            padding: 1.5rem;
+        }
+
+        .kr-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .kr-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .kr-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .kr-description {
+            font-size: 0.95rem;
+        }
+
+        .kr-metric {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+        }
+
+        .kr-metric-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .kr-metric-value {
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .kr-bar {
+            width: 120px;
+            height: 8px;
+            background: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .kr-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .kr-bar-fill.green { background: var(--status-green); }
+        .kr-bar-fill.yellow { background: var(--status-yellow); }
+        .kr-bar-fill.red { background: var(--status-red); }
+        .kr-bar-fill.blue { background: var(--fiserv-blue); }
+
+        .kr-status {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .kr-status.on-track { background: rgba(16, 185, 129, 0.2); color: var(--status-green); }
+        .kr-status.at-risk { background: rgba(245, 158, 11, 0.2); color: var(--status-yellow); }
+        .kr-status.blocked { background: rgba(239, 68, 68, 0.2); color: var(--status-red); }
+        .kr-status.not-started { background: rgba(107, 114, 128, 0.2); color: var(--text-muted); }
+        .kr-status.complete { background: rgba(59, 130, 246, 0.2); color: var(--status-blue); }
+
+        /* Investment Tracker */
+        .investment-section {
+            margin-bottom: 3rem;
+        }
+
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .investment-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .investment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .investment-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .investment-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .investment-bar {
+            height: 24px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .investment-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .investment-segment.spent { background: var(--fiserv-blue); }
+        .investment-segment.committed { background: var(--fiserv-orange); }
+        .investment-segment.remaining { background: var(--fiserv-gray); }
+
+        .investment-legend {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.spent { background: var(--fiserv-blue); }
+        .legend-dot.committed { background: var(--fiserv-orange); }
+        .legend-dot.remaining { background: var(--fiserv-gray); }
+
+        /* DORA Metrics */
+        .dora-section {
+            margin-bottom: 3rem;
+        }
+
+        .dora-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .dora-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .dora-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .dora-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .dora-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.25rem;
+        }
+
+        .dora-target {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .dora-rating {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 0.75rem;
+        }
+
+        .dora-rating.elite { background: rgba(16, 185, 129, 0.2); color: var(--status-green); }
+        .dora-rating.high { background: rgba(59, 130, 246, 0.2); color: var(--status-blue); }
+        .dora-rating.medium { background: rgba(245, 158, 11, 0.2); color: var(--status-yellow); }
+        .dora-rating.low { background: rgba(239, 68, 68, 0.2); color: var(--status-red); }
+
+        /* Timeline */
+        .timeline-section {
+            margin-bottom: 3rem;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--bg-card);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            flex: 1;
+        }
+
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            border: 3px solid;
+        }
+
+        .timeline-dot.complete { background: var(--status-green); border-color: var(--status-green); }
+        .timeline-dot.active { background: var(--fiserv-blue); border-color: var(--fiserv-blue); box-shadow: 0 0 0 4px rgba(35, 124, 184, 0.3); }
+        .timeline-dot.upcoming { background: var(--bg-card); border-color: var(--fiserv-gray); }
+
+        .timeline-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .investment-grid { grid-template-columns: 1fr; }
+            .dora-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid { grid-template-columns: 1fr; }
+            .kr-item { grid-template-columns: 1fr; gap: 0.5rem; }
+            .timeline { flex-direction: column; gap: 1rem; }
+            .timeline::before { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">
+                <span>&larr;</span>
+                <span>Back to Critical Path</span>
+            </a>
+        </nav>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>OKRs & Success Metrics</h1>
+            <p>Platform as a Product | FY2026 Objectives & Key Results</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-value blue">3</div>
+                <div class="summary-label">Strategic Objectives</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value orange">12</div>
+                <div class="summary-label">Key Results</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value green">42%</div>
+                <div class="summary-label">Overall Progress</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value yellow">Q1</div>
+                <div class="summary-label">Current Quarter</div>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-section">
+            <div class="section-header">
+                <h2>Program Timeline</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot complete"></div>
+                    <div class="timeline-label">Phase 0</div>
+                    <div class="timeline-date">Q4 2025</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot active"></div>
+                    <div class="timeline-label">PoV Workshop</div>
+                    <div class="timeline-date">Q1 2026</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot upcoming"></div>
+                    <div class="timeline-label">Pilot</div>
+                    <div class="timeline-date">Q2 2026</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot upcoming"></div>
+                    <div class="timeline-label">MC-1 Rollout</div>
+                    <div class="timeline-date">Q3 2026</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot upcoming"></div>
+                    <div class="timeline-label">Scale</div>
+                    <div class="timeline-date">Q4 2026</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Objective 1 -->
+        <div class="okr-section">
+            <div class="section-header">
+                <h2>Q1 2026 Objectives</h2>
+                <span class="phase-badge pov">Phase 1: PoV</span>
+            </div>
+
+            <div class="objective-card">
+                <div class="objective-header">
+                    <div class="objective-title">
+                        <div class="objective-icon blue">
+                            <span>&#9889;</span>
+                        </div>
+                        <div>
+                            <div class="objective-name">O1: Prove Platform Value</div>
+                            <div class="objective-why">Demonstrate end-to-end IDP capabilities through PoV workshop</div>
+                        </div>
+                    </div>
+                    <div class="objective-progress">
+                        <div class="progress-ring">
+                            <svg width="50" height="50">
+                                <circle class="bg" cx="25" cy="25" r="20"></circle>
+                                <circle class="progress" cx="25" cy="25" r="20"
+                                    stroke="var(--fiserv-blue)"
+                                    stroke-dasharray="125.6"
+                                    stroke-dashoffset="75.4"></circle>
+                            </svg>
+                            <span class="progress-text">40%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="key-results">
+                    <div class="kr-item">
+                        <div class="kr-number">1.1</div>
+                        <div class="kr-description">Complete all 17 Phase 0 tool integrations with Cortex</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Progress</span>
+                            <span class="kr-metric-value">6/17</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill yellow" style="width: 35%"></div>
+                        </div>
+                        <span class="kr-status at-risk">At Risk</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">1.2</div>
+                        <div class="kr-description">Deploy Java/SpringBoot demo app to AKS via Kratix promise</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Status</span>
+                            <span class="kr-metric-value">Ready</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill green" style="width: 100%"></div>
+                        </div>
+                        <span class="kr-status complete">Complete</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">1.3</div>
+                        <div class="kr-description">Achieve Bronze scorecard level for demo app</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Score</span>
+                            <span class="kr-metric-value">--</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill blue" style="width: 0%"></div>
+                        </div>
+                        <span class="kr-status not-started">Not Started</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">1.4</div>
+                        <div class="kr-description">Validate Greenfield + Brownfield test scenarios</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Tests</span>
+                            <span class="kr-metric-value">0/4</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill blue" style="width: 0%"></div>
+                        </div>
+                        <span class="kr-status not-started">Not Started</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="objective-card">
+                <div class="objective-header">
+                    <div class="objective-title">
+                        <div class="objective-icon orange">
+                            <span>&#128202;</span>
+                        </div>
+                        <div>
+                            <div class="objective-name">O2: Establish Engineering Intelligence</div>
+                            <div class="objective-why">Give leadership data-driven visibility into engineering health</div>
+                        </div>
+                    </div>
+                    <div class="objective-progress">
+                        <div class="progress-ring">
+                            <svg width="50" height="50">
+                                <circle class="bg" cx="25" cy="25" r="20"></circle>
+                                <circle class="progress" cx="25" cy="25" r="20"
+                                    stroke="var(--fiserv-orange)"
+                                    stroke-dasharray="125.6"
+                                    stroke-dashoffset="94.2"></circle>
+                            </svg>
+                            <span class="progress-text">25%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="key-results">
+                    <div class="kr-item">
+                        <div class="kr-number">2.1</div>
+                        <div class="kr-description">Configure 5 production readiness scorecards in Cortex</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Progress</span>
+                            <span class="kr-metric-value">1/5</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill yellow" style="width: 20%"></div>
+                        </div>
+                        <span class="kr-status at-risk">At Risk</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">2.2</div>
+                        <div class="kr-description">Build custom CQL query for Marshall Plan (<80% code coverage)</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Status</span>
+                            <span class="kr-metric-value">--</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill blue" style="width: 0%"></div>
+                        </div>
+                        <span class="kr-status not-started">Not Started</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">2.3</div>
+                        <div class="kr-description">Launch leadership dashboard with portfolio view</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Status</span>
+                            <span class="kr-metric-value">--</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill blue" style="width: 0%"></div>
+                        </div>
+                        <span class="kr-status not-started">Not Started</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">2.4</div>
+                        <div class="kr-description">Track DORA metrics via Harness integration</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Metrics</span>
+                            <span class="kr-metric-value">2/4</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill green" style="width: 50%"></div>
+                        </div>
+                        <span class="kr-status on-track">On Track</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="objective-card">
+                <div class="objective-header">
+                    <div class="objective-title">
+                        <div class="objective-icon green">
+                            <span>&#128640;</span>
+                        </div>
+                        <div>
+                            <div class="objective-name">O3: Enable Developer Self-Service</div>
+                            <div class="objective-why">Reduce infrastructure wait time from days to minutes</div>
+                        </div>
+                    </div>
+                    <div class="objective-progress">
+                        <div class="progress-ring">
+                            <svg width="50" height="50">
+                                <circle class="bg" cx="25" cy="25" r="20"></circle>
+                                <circle class="progress" cx="25" cy="25" r="20"
+                                    stroke="var(--status-green)"
+                                    stroke-dasharray="125.6"
+                                    stroke-dashoffset="50.2"></circle>
+                            </svg>
+                            <span class="progress-text">60%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="key-results">
+                    <div class="kr-item">
+                        <div class="kr-number">3.1</div>
+                        <div class="kr-description">Kratix Known Namespace promise operational</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Status</span>
+                            <span class="kr-metric-value">Done</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill green" style="width: 100%"></div>
+                        </div>
+                        <span class="kr-status complete">Complete</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">3.2</div>
+                        <div class="kr-description">Kratix Unknown Namespace promise operational</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Status</span>
+                            <span class="kr-metric-value">Done</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill green" style="width: 100%"></div>
+                        </div>
+                        <span class="kr-status complete">Complete</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">3.3</div>
+                        <div class="kr-description">Deploy Coder CDE for pilot developers</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Seats</span>
+                            <span class="kr-metric-value">0/50</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill blue" style="width: 0%"></div>
+                        </div>
+                        <span class="kr-status not-started">Not Started</span>
+                    </div>
+                    <div class="kr-item">
+                        <div class="kr-number">3.4</div>
+                        <div class="kr-description">Reduce environment provisioning time to <5 minutes</div>
+                        <div class="kr-metric">
+                            <span class="kr-metric-label">Current</span>
+                            <span class="kr-metric-value">3 days</span>
+                        </div>
+                        <div class="kr-bar">
+                            <div class="kr-bar-fill yellow" style="width: 40%"></div>
+                        </div>
+                        <span class="kr-status at-risk">At Risk</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investment Tracker -->
+        <div class="investment-section">
+            <div class="section-header">
+                <h2>Investment Tracker</h2>
+            </div>
+            <div class="investment-grid">
+                <div class="investment-card">
+                    <div class="investment-header">
+                        <span class="investment-title">Total Investment</span>
+                        <span class="investment-total">$20M</span>
+                    </div>
+                    <div class="investment-bar">
+                        <div class="investment-segment spent" style="width: 15%">$3M</div>
+                        <div class="investment-segment committed" style="width: 25%">$5M</div>
+                        <div class="investment-segment remaining" style="width: 60%">$12M</div>
+                    </div>
+                    <div class="investment-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot spent"></div>
+                            <span>Spent (15%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot committed"></div>
+                            <span>Committed (25%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot remaining"></div>
+                            <span>Remaining (60%)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="investment-card">
+                    <div class="investment-header">
+                        <span class="investment-title">Cortex Licenses</span>
+                        <span class="investment-total">500 seats</span>
+                    </div>
+                    <div class="investment-bar">
+                        <div class="investment-segment spent" style="width: 4%">20</div>
+                        <div class="investment-segment committed" style="width: 16%">80</div>
+                        <div class="investment-segment remaining" style="width: 80%">400</div>
+                    </div>
+                    <div class="investment-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot spent"></div>
+                            <span>Active (4%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot committed"></div>
+                            <span>Allocated (16%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot remaining"></div>
+                            <span>Available (80%)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="investment-card">
+                    <div class="investment-header">
+                        <span class="investment-title">Coder Licenses</span>
+                        <span class="investment-total">1,000 seats</span>
+                    </div>
+                    <div class="investment-bar">
+                        <div class="investment-segment spent" style="width: 0%"></div>
+                        <div class="investment-segment committed" style="width: 5%">50</div>
+                        <div class="investment-segment remaining" style="width: 95%">950</div>
+                    </div>
+                    <div class="investment-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot spent"></div>
+                            <span>Active (0%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot committed"></div>
+                            <span>Allocated (5%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot remaining"></div>
+                            <span>Available (95%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DORA Metrics -->
+        <div class="dora-section">
+            <div class="section-header">
+                <h2>DORA Metrics (Target State)</h2>
+            </div>
+            <div class="dora-grid">
+                <div class="dora-card">
+                    <div class="dora-icon">&#128640;</div>
+                    <div class="dora-name">Deployment Frequency</div>
+                    <div class="dora-value">Weekly</div>
+                    <div class="dora-target">Target: On-demand</div>
+                    <span class="dora-rating medium">Medium</span>
+                </div>
+                <div class="dora-card">
+                    <div class="dora-icon">&#9889;</div>
+                    <div class="dora-name">Lead Time for Changes</div>
+                    <div class="dora-value">5 days</div>
+                    <div class="dora-target">Target: &lt;1 day</div>
+                    <span class="dora-rating low">Low</span>
+                </div>
+                <div class="dora-card">
+                    <div class="dora-icon">&#128165;</div>
+                    <div class="dora-name">Change Failure Rate</div>
+                    <div class="dora-value">12%</div>
+                    <div class="dora-target">Target: &lt;5%</div>
+                    <span class="dora-rating medium">Medium</span>
+                </div>
+                <div class="dora-card">
+                    <div class="dora-icon">&#128260;</div>
+                    <div class="dora-name">MTTR</div>
+                    <div class="dora-value">4 hrs</div>
+                    <div class="dora-target">Target: &lt;1 hr</div>
+                    <span class="dora-rating high">High</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
